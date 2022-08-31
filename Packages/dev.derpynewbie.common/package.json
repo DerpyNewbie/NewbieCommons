@@ -9,6 +9,13 @@
     "email": "derpynewbie@gmail.com",
     "url": "https://github.com/derpynewbie"
   },
+  "samples": [
+    {
+      "displayName": "NewbieCommonsSampleScene",
+      "description": "Newbie Commons Sample Scene",
+      "path": "Samples/Scenes"
+    }
+  ],
   "vpmDependencies": {
     "com.vrchat.worlds": "3.1.x",
     "com.vrchat.udonsharp": "1.1.x"
