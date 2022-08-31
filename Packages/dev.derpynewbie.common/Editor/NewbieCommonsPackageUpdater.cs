@@ -7,31 +7,36 @@ namespace DerpyNewbie.Common.Editor
 {
     public static class NewbieCommonsPackageUpdater
     {
-        [MenuItem("Newbie Commons/Update NewbieCommons")]
-        public static void UpdatePackages()
+        [MenuItem("DerpyNewbie/Update/Update NewbieCommons")]
+        public static void UpdateNewbieCommonsPackage()
         {
-            var request =
-                Client.Add("https://github.com/DerpyNewbie/NewbieCommons.git?path=/Packages/dev.derpynewbie.common");
+            UpdatePackage("NewbieCommons", "https://github.com/DerpyNewbie/NewbieCommons.git?path=/Packages/dev.derpynewbie.common");
+        }
+
+        public static void UpdatePackage(string displayName, string gitUrl)
+        {
+            var request = Client.Add(gitUrl);
 
             while (!request.IsCompleted)
             {
                 Thread.Sleep(100);
-                EditorUtility.DisplayProgressBar("Updating NewbieCommons Package", "Updating NewbieCommons Package", 0);
+                EditorUtility.DisplayProgressBar($"Updating {displayName} Package", $"Updating {displayName} Package", 0);
             }
 
             EditorUtility.ClearProgressBar();
             switch (request.Status)
             {
                 case StatusCode.Success:
-                    EditorUtility.DisplayDialog("Updating NewbieCommons Package",
-                        $"Successfully updated NewbieCommons package to {request.Result.version}@{request.Result.git.hash}", "OK!");
+                    EditorUtility.DisplayDialog($"Updating {displayName} Package",
+                        $"Successfully updated {request.Result.displayName} package to {request.Result.version}@{request.Result.git.revision}",
+                        "OK!");
                     break;
                 case StatusCode.Failure:
-                    EditorUtility.DisplayDialog("Updating NewbieCommons Package",
+                    EditorUtility.DisplayDialog($"Updating {displayName} Package",
                         $"Failed to update Package\n{request.Error.message}", "OK!");
                     break;
                 case StatusCode.InProgress:
-                    Debug.LogWarning("NewbieCommons Package Update is in progress?");
+                    Debug.LogWarning($"{displayName} Package Update is in progress?");
                     break;
             }
         }
