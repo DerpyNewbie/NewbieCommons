@@ -22,17 +22,26 @@ namespace DerpyNewbie.Common.Editor
         {
             var request =
                 Client.Add("https://github.com/DerpyNewbie/NewbieCommons.git?path=/Packages/dev.derpynewbie.common");
+
+            var progress = 0F;
             while (!request.IsCompleted)
-                Thread.Sleep(1000);
+            {
+                EditorUtility.DisplayProgressBar(
+                    "Updating Package",
+                    "Updating NewbieCommons Package",
+                    progress += 0.1F);
+                Thread.Sleep(100);
+            }
+
+            EditorUtility.ClearProgressBar();
 
             switch (request.Status)
             {
                 case StatusCode.Success:
-                    Debug.Log("NewbieCommons Package Update completed");
+                    Debug.Log($"{request.Result.displayName} is now {request.Result.version}");
                     break;
                 case StatusCode.Failure:
-                    Debug.LogError(
-                        $"NewbieCommons Package Update failed:{request.Error.errorCode} {request.Error.message}");
+                    Debug.LogError($"{request.Error.message}");
                     break;
                 case StatusCode.InProgress:
                     Debug.LogWarning("NewbieCommons Package Update is in progress?");
