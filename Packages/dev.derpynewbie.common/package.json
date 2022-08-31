@@ -1,6 +1,6 @@
 {
   "name": "dev.derpynewbie.common",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "displayName": "Newbie Commons",
   "description": "Useful utilities for UdonSharp",
   "unity": "2019.4",
@@ -25,6 +25,6 @@
     "com.vrchat.worlds": "https://github.com/vrchat/packages.git?path=/packages/com.vrchat.worlds#3.0.4",
     "com.vrchat.udonsharp": "https://github.com/vrchat-community/UdonSharp.git?path=/Packages/com.vrchat.UdonSharp#1.0.1"
   },
-  "url": "https://github.com/derpynewbie/NewbieCommons.git?path=/Packages/dev.derpynewbie.common#0.1.0",
+  "url": "https://github.com/derpynewbie/NewbieCommons.git?path=/Packages/dev.derpynewbie.common#0.1.2",
   "hideInEditor": false
 }
