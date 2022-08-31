@@ -1,0 +1,16 @@
+{
+    "name": "DerpyNewbie.Common.Editor",
+    "references": [],
+    "includePlatforms": [
+        "Editor",
+        "PS5"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
