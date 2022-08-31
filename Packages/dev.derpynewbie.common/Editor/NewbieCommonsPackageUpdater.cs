@@ -28,7 +28,7 @@ namespace DerpyNewbie.Common.Editor
             {
                 case StatusCode.Success:
                     EditorUtility.DisplayDialog($"Updating {displayName} Package",
-                        $"Successfully updated {request.Result.displayName} package to {request.Result.version}@{request.Result.git.revision}",
+                        $"Successfully updated {request.Result.displayName} package to {request.Result.version}@{request.Result.git.hash.Substring(0, 5)}",
                         "OK!");
                     break;
                 case StatusCode.Failure:
