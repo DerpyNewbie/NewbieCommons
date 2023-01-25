@@ -1,6 +1,6 @@
 {
     "name": "DerpyNewbie.Common.Editor",
-    "references": [],
+    "references": ["GUID:849b8c6574848ed44b9f0ccd066aff2b"],
     "includePlatforms": [
         "Editor",
         "PS5"
