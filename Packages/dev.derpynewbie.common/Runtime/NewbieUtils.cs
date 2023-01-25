@@ -1,5 +1,6 @@
 ﻿using System;
 using JetBrains.Annotations;
+using UnityEngine;
 using VRC.SDKBase;
 
 namespace DerpyNewbie.Common
@@ -68,6 +69,46 @@ namespace DerpyNewbie.Common
                 .Replace("<color=teal>", "<color=#008080ff>")
                 .Replace("<color=white>", "<color=#ffffffff>")
                 .Replace("<color=yellow>", "<color=#ffff00ff>");
+        }
+        
+        public static Color GetColorFromAlias(string name)
+        {
+            switch (name.ToLower())
+            {
+                case "red":
+                case "r":
+                    return Color.red;
+                case "green":
+                case "g":
+                    return Color.green;
+                case "blue":
+                case "b":
+                    return Color.blue;
+                default:
+                case "white":
+                    return Color.white;
+                case "black":
+                    return Color.black;
+                case "yellow":
+                case "y":
+                    return Color.yellow;
+                case "cyan":
+                case "c":
+                    return Color.cyan;
+                case "magenta":
+                case "m":
+                    return Color.magenta;
+                case "grey":
+                case "gray":
+                    return Color.gray;
+                case "clear":
+                    return Color.clear;
+            }
+        }
+
+        public static string[] GetColorAliases()
+        {
+            return new[] { "red", "green", "blue", "white", "black", "yellow", "cyan", "magenta", "gray", "clear" };
         }
     }
 }
