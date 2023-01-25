@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c333ccfdd0cbdbc4ca30cef2dd6e6b9b, type: 3}
   m_Name: PickupEventInvoker
   m_EditorClassIdentifier: 
-  serializedUdonProgramAsset: {fileID: 11400000, guid: ac9d1fe1cc73a7544a75a382f13dd5bd,
+  serializedUdonProgramAsset: {fileID: 11400000, guid: f8285b051312b6f4cbf87eb514da940b,
     type: 2}
   udonAssembly: 
   assemblyError: 
@@ -422,7 +422,7 @@ MonoBehaviour:
       Data: 27|System.RuntimeType, mscorlib
     - Name: 
       Entry: 1
-      Data: DerpyNewbie.Common.Invoker.PickupEventType, DerpyNewbie.Commons
+      Data: DerpyNewbie.Common.Invoker.PickupEventType, DerpyNewbie.Common
     - Name: 
       Entry: 8
       Data: 

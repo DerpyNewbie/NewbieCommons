@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c333ccfdd0cbdbc4ca30cef2dd6e6b9b, type: 3}
   m_Name: ObjectPoolReturner
   m_EditorClassIdentifier: 
-  serializedUdonProgramAsset: {fileID: 11400000, guid: 683e4f8bba029b548ad5f6c4606d73eb,
+  serializedUdonProgramAsset: {fileID: 11400000, guid: 545d916000eda3240b13dd41d0dc33b0,
     type: 2}
   udonAssembly: 
   assemblyError: 
@@ -62,7 +62,7 @@ MonoBehaviour:
       Data: 3|System.RuntimeType, mscorlib
     - Name: 
       Entry: 1
-      Data: DerpyNewbie.Common.ObjectPool.ObjectPoolProxy[], DerpyNewbie.Commons
+      Data: DerpyNewbie.Common.ObjectPool.ObjectPoolProxy[], DerpyNewbie.Common
     - Name: 
       Entry: 8
       Data: 

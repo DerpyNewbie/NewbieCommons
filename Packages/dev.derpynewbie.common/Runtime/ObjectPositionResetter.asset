@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c333ccfdd0cbdbc4ca30cef2dd6e6b9b, type: 3}
   m_Name: ObjectPositionResetter
   m_EditorClassIdentifier: 
-  serializedUdonProgramAsset: {fileID: 11400000, guid: 4cc9a2b9aab492c46b073ea825bd7632,
+  serializedUdonProgramAsset: {fileID: 11400000, guid: 5ba5898755f8cd54a93d9f4d534f8bce,
     type: 2}
   udonAssembly: 
   assemblyError: 

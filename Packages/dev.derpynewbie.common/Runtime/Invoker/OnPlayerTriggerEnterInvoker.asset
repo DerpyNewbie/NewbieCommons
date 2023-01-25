@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c333ccfdd0cbdbc4ca30cef2dd6e6b9b, type: 3}
   m_Name: OnPlayerTriggerEnterInvoker
   m_EditorClassIdentifier: 
-  serializedUdonProgramAsset: {fileID: 11400000, guid: 414f7d8265372dc418be2b37dea647f6,
+  serializedUdonProgramAsset: {fileID: 11400000, guid: 7cc33a5b2de69d64bbfdf78fbc4f7f1a,
     type: 2}
   udonAssembly: 
   assemblyError: 

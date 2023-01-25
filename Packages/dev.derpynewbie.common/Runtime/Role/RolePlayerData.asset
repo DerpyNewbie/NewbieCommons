@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c333ccfdd0cbdbc4ca30cef2dd6e6b9b, type: 3}
   m_Name: RolePlayerData
   m_EditorClassIdentifier: 
-  serializedUdonProgramAsset: {fileID: 11400000, guid: dd4da07a90166e04ca29b8451d3502e1,
+  serializedUdonProgramAsset: {fileID: 11400000, guid: be5ca84ef694dc440bb53c88061df21b,
     type: 2}
   udonAssembly: 
   assemblyError: 
@@ -122,7 +122,7 @@ MonoBehaviour:
       Data: 7|System.RuntimeType, mscorlib
     - Name: 
       Entry: 1
-      Data: DerpyNewbie.Common.Role.RoleData[], DerpyNewbie.Commons
+      Data: DerpyNewbie.Common.Role.RoleData[], DerpyNewbie.Common
     - Name: 
       Entry: 8
       Data: 

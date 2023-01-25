@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c333ccfdd0cbdbc4ca30cef2dd6e6b9b, type: 3}
   m_Name: Megaphone
   m_EditorClassIdentifier: 
-  serializedUdonProgramAsset: {fileID: 11400000, guid: 8faa606356aa396429500ddd829b74e8,
+  serializedUdonProgramAsset: {fileID: 11400000, guid: 30cf21e376f73d749957c44007b53f16,
     type: 2}
   udonAssembly: 
   assemblyError: 
@@ -635,7 +635,7 @@ MonoBehaviour:
       Data: 38|System.RuntimeType, mscorlib
     - Name: 
       Entry: 1
-      Data: DerpyNewbie.Common.UI.SelectionButton, DerpyNewbie.Commons
+      Data: DerpyNewbie.Common.UI.SelectionButton, DerpyNewbie.Common
     - Name: 
       Entry: 8
       Data: 
@@ -845,7 +845,7 @@ MonoBehaviour:
       Data: 49|System.RuntimeType, mscorlib
     - Name: 
       Entry: 1
-      Data: DerpyNewbie.Common.PlayerVoiceStore, DerpyNewbie.Commons
+      Data: DerpyNewbie.Common.PlayerVoiceStore, DerpyNewbie.Common
     - Name: 
       Entry: 8
       Data: 

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c333ccfdd0cbdbc4ca30cef2dd6e6b9b, type: 3}
   m_Name: DoubleClickButton
   m_EditorClassIdentifier: 
-  serializedUdonProgramAsset: {fileID: 11400000, guid: 6b2d748a3132cf442a058973007a1785,
+  serializedUdonProgramAsset: {fileID: 11400000, guid: 8f2b7f77f6fdee94f8a656af79ae3b77,
     type: 2}
   udonAssembly: 
   assemblyError: 
