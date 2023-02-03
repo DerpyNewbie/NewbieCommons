@@ -8,6 +8,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using VRC.SDKBase.Editor.BuildPipeline;
+using static DerpyNewbie.Common.Editor.NewbieCommonsEditorUtil;
 
 namespace DerpyNewbie.Common.Editor
 {
@@ -32,8 +33,8 @@ namespace DerpyNewbie.Common.Editor
                 {
                     var foundComponent = GetComponentsInScene(scene, field.FieldType).FirstOrDefault();
                     foundComponentsDict.Add(field.FieldType, foundComponent);
-                    UnityEngine.Debug.Log(
-                        $"[NewbieCommons] Found requested component `{field.DeclaringType?.FullName}` at `{GetHierarchyName(foundComponent)}`");
+                    Log(
+                        $"Found requested component `{field.DeclaringType?.FullName}` at `{GetHierarchyName(foundComponent)}`");
                 }
 
                 foreach (var component in GetComponentsInScene(scene, field.DeclaringType))
@@ -64,7 +65,7 @@ namespace DerpyNewbie.Common.Editor
 
             if (printResult)
             {
-                var sb = new StringBuilder("[NewbieCommons] Inject Result:");
+                var sb = new StringBuilder("Injection Result:");
 
                 foreach (var pair in foundComponentsDict)
                     sb.Append("\n").Append(pair.Key.FullName).Append(", ").Append(GetHierarchyName(pair.Value));
@@ -72,7 +73,7 @@ namespace DerpyNewbie.Common.Editor
                 sb.Append(
                     $"\n\n{UpdatedFieldCount} fields affected, {UpdatedComponentCount} components updated in {stopwatch.ElapsedMilliseconds} ms.");
 
-                UnityEngine.Debug.Log(sb.ToString());
+                Log(sb.ToString());
             }
         }
 
@@ -101,36 +102,49 @@ namespace DerpyNewbie.Common.Editor
             if (component == null)
                 return "null";
 
-            StringBuilder sb = new StringBuilder(component.transform.name);
-            var t = component.transform.parent;
+            var t = component.transform;
+            StringBuilder sb = new StringBuilder(t.name);
             while (t.parent != null)
             {
-                sb.Insert(0, "/").Insert(0, t.name);
-                t = t.parent;
+                var parent = t.parent;
+                sb.Insert(0, "/").Insert(0, parent.name);
+                t = parent;
             }
 
             return sb.ToString();
         }
+    }
 
-        [MenuItem("DerpyNewbie/Inject `NewbieInject` fields")]
-        public static void InjectMenu()
+    public static class NewbieInjectConfig
+    {
+        private const string Namespace = "NewbieCommons.NewbieInject.";
+        private const string OnBuild = Namespace + "OnBuild";
+        private const string OnPlay = Namespace + "OnPlay";
+
+        public static bool InjectOnBuild
         {
-            try
-            {
-                Inject(SceneManager.GetActiveScene());
-            }
-            catch (InvalidOperationException ex)
-            {
-                UnityEngine.Debug.LogException(ex);
-                EditorUtility.DisplayDialog("Inject", "Injection aborted", "OK!");
-                return;
-            }
+            get => GetConfigValue(OnBuild);
+            set => SetConfigValue(OnBuild, value);
+        }
 
-            EditorUtility.DisplayDialog(
-                "Inject",
-                $"Injected reference to {UpdatedComponentCount} objects ({UpdatedFieldCount} fields).",
-                "OK!"
-            );
+        public static bool InjectOnPlay
+        {
+            get => GetConfigValue(OnPlay);
+            set => SetConfigValue(OnPlay, value);
+        }
+
+        private static bool GetConfigValue(string name)
+        {
+            var v = EditorUserSettings.GetConfigValue(name);
+            if (string.IsNullOrWhiteSpace(v) || !bool.TryParse(v, out var result))
+                return true;
+
+            return result;
+        }
+
+        private static void SetConfigValue(string name, bool value)
+        {
+            EditorUserSettings.SetConfigValue(name, value.ToString());
         }
     }
 
@@ -140,16 +154,38 @@ namespace DerpyNewbie.Common.Editor
 
         public bool OnBuildRequested(VRCSDKRequestedBuildType requestedBuildType)
         {
+            if (!NewbieInjectConfig.InjectOnBuild)
+                return true;
+
             if (requestedBuildType == VRCSDKRequestedBuildType.Avatar)
             {
-                UnityEngine.Debug.LogError("[NewbieCommons] Build Injection not supported with Avatar Build.");
+                LogError("Build Injection not supported with Avatar Build.");
                 return true;
             }
 
-            UnityEngine.Debug.Log("[NewbieCommons] Pre-Build injection started.");
+            Log("Pre-Build injection started.");
             NewbieInjectProcessor.Inject(SceneManager.GetActiveScene());
-            UnityEngine.Debug.Log("[NewbieCommons] Pre-Build injection ended.");
+            Log("Pre-Build injection ended.");
             return true;
+        }
+    }
+
+    [InitializeOnLoad]
+    public static class NewbieCommonsPlayInject
+    {
+        static NewbieCommonsPlayInject()
+        {
+            EditorApplication.playModeStateChanged += PlayModeStateChanged;
+        }
+
+        private static void PlayModeStateChanged(PlayModeStateChange change)
+        {
+            if (!NewbieInjectConfig.InjectOnPlay || change != PlayModeStateChange.ExitingEditMode)
+                return;
+
+            Log("Pre-Play injection started.");
+            NewbieInjectProcessor.Inject(SceneManager.GetActiveScene());
+            Log("Pre-Play injection ended.");
         }
     }
 }
