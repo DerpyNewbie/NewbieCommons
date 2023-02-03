@@ -59,6 +59,9 @@ namespace DerpyNewbie.Common.Editor
 
             stopwatch.Stop();
 
+            if (showProgress)
+                EditorUtility.ClearProgressBar();
+
             if (printResult)
             {
                 var sb = new StringBuilder("[NewbieCommons] Inject Result:");
