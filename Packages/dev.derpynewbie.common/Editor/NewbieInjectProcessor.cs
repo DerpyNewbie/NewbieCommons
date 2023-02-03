@@ -34,7 +34,7 @@ namespace DerpyNewbie.Common.Editor
                     var foundComponent = GetComponentsInScene(scene, field.FieldType).FirstOrDefault();
                     foundComponentsDict.Add(field.FieldType, foundComponent);
                     Log(
-                        $"Found requested component `{field.DeclaringType?.FullName}` at `{GetHierarchyName(foundComponent)}`");
+                        $"Found requested component `{field.FieldType.FullName}` at `{GetHierarchyName(foundComponent)}`");
                 }
 
                 foreach (var component in GetComponentsInScene(scene, field.DeclaringType))
