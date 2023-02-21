@@ -7,13 +7,21 @@ namespace DerpyNewbie.Common
 {
     public static class NewbieUtils
     {
+        [PublicAPI]
         public static bool IsJapaneseTimeZone() => TimeZoneInfo.Local.Id == "Tokyo Standard Time" ||
                                                    TimeZoneInfo.Local.Id == "JST" ||
                                                    TimeZoneInfo.Local.Id == "Asia/Tokyo";
 
+        [PublicAPI]
         public static float GetDefaultGain() => 15F;
+
+        [PublicAPI]
         public static float GetDefaultFar() => 25F;
+
+        [PublicAPI]
         public static float GetDefaultNear() => 0;
+
+        [PublicAPI]
         public static float GetDefaultRadius() => 0;
 
         [PublicAPI]
@@ -44,8 +52,10 @@ namespace DerpyNewbie.Common
             return !Utilities.IsValid(api) ? $"{playerId}:InvalidPlayer" : $"{api.playerId}:{api.displayName}";
         }
 
-        private static string ReplaceColorToTMP(string source)
+        [PublicAPI]
+        public static string ReplaceColorToTMP(string source)
         {
+            // ReSharper disable StringLiteralTypo
             return source
                 .Replace("<color=aqua>", "<color=#00ffffff>")
                 .Replace("<color=black>", "<color=#000000ff>")
@@ -69,8 +79,10 @@ namespace DerpyNewbie.Common
                 .Replace("<color=teal>", "<color=#008080ff>")
                 .Replace("<color=white>", "<color=#ffffffff>")
                 .Replace("<color=yellow>", "<color=#ffff00ff>");
+            // ReSharper restore StringLiteralTypo
         }
-        
+
+        [PublicAPI]
         public static Color GetColorFromAlias(string name)
         {
             switch (name.ToLower())
@@ -106,9 +118,22 @@ namespace DerpyNewbie.Common
             }
         }
 
+        [PublicAPI]
         public static string[] GetColorAliases()
         {
             return new[] { "red", "green", "blue", "white", "black", "yellow", "cyan", "magenta", "gray", "clear" };
+        }
+
+        // From UnityEngine.ColorUtility
+        // ReSharper disable once InconsistentNaming
+        [PublicAPI]
+        public static string ToHtmlStringRGBA(Color color)
+        {
+            var color32 = new Color32((byte)Mathf.Clamp(Mathf.RoundToInt(color.r * byte.MaxValue), 0, byte.MaxValue),
+                (byte)Mathf.Clamp(Mathf.RoundToInt(color.g * byte.MaxValue), 0, byte.MaxValue),
+                (byte)Mathf.Clamp(Mathf.RoundToInt(color.b * byte.MaxValue), 0, byte.MaxValue),
+                (byte)Mathf.Clamp(Mathf.RoundToInt(color.a * byte.MaxValue), 0, byte.MaxValue));
+            return $"{color32.r:X2}{color32.g:X2}{color32.b:X2}{color32.a:X2}";
         }
     }
 }
