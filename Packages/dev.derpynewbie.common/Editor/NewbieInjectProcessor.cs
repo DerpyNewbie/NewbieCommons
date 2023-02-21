@@ -180,7 +180,9 @@ namespace DerpyNewbie.Common.Editor
 
         private static void PlayModeStateChanged(PlayModeStateChange change)
         {
-            if (!NewbieInjectConfig.InjectOnPlay || change != PlayModeStateChange.ExitingEditMode)
+            if (!NewbieInjectConfig.InjectOnPlay || BuildPipeline.isBuildingPlayer ||
+                UnityEngine.Object.FindObjectOfType<PipelineSaver>() != null ||
+                change != PlayModeStateChange.ExitingEditMode)
                 return;
 
             Log("Pre-Play injection started.");
