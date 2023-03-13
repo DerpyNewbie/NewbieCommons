@@ -51,6 +51,7 @@ namespace DerpyNewbie.Common.UI
                 transform.localScale = _isShowing ? _initialScale : Vector3.zero;
                 _currentTime = 0;
                 _isPlaying = false;
+                gameObject.SetActive(_isShowing);
             }
         }
 
@@ -64,6 +65,7 @@ namespace DerpyNewbie.Common.UI
             _isShowing = true;
 
             transform.localScale = Vector3.zero;
+            gameObject.SetActive(true);
         }
 
         public void Hide()
