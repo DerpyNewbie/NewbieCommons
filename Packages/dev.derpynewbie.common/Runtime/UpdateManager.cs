@@ -33,11 +33,22 @@ namespace DerpyNewbie.Common
             _EnsureInit();
         }
 
+        #region EventSource
+
         private void Update()
         {
             for (var i = 0; i < _updateBehavioursCount; i++)
             {
                 var b = _updateBehaviours[i];
+
+#if NEWBIECOMMONS_ENABLE_UPDATER_NULL_CHECK
+                if (b == null)
+                {
+                    Debug.Log($"[UpdateManager] Update {i} is null");
+                    continue;
+                }
+#endif
+
                 b.SendCustomEvent("_Update");
             }
 
@@ -48,6 +59,14 @@ namespace DerpyNewbie.Common
                     _lastCalledSlowUpdateIndex = 0;
 
                 var b = _slowUpdateBehaviours[_lastCalledSlowUpdateIndex];
+#if NEWBIECOMMONS_ENABLE_UPDATER_NULL_CHECK
+                if (b == null)
+                {
+                    Debug.Log($"[UpdateManager] SlowUpdate {_lastCalledSlowUpdateIndex} is null");
+                    return;
+                }
+#endif
+
                 b.SendCustomEvent("_SlowUpdate");
             }
         }
@@ -57,6 +76,14 @@ namespace DerpyNewbie.Common
             for (var i = 0; i < _fixedUpdateBehavioursCount; i++)
             {
                 var b = _fixedUpdateBehaviours[i];
+#if NEWBIECOMMONS_ENABLE_UPDATER_NULL_CHECK
+                if (b == null)
+                {
+                    Debug.Log($"[UpdateManager] FixedUpdate {i} is null");
+                    continue;
+                }
+#endif
+
                 b.SendCustomEvent("_FixedUpdate");
             }
 
@@ -67,6 +94,14 @@ namespace DerpyNewbie.Common
                     _lastCalledSlowFixedUpdateIndex = 0;
 
                 var b = _slowFixedUpdateBehaviours[_lastCalledSlowFixedUpdateIndex];
+#if NEWBIECOMMONS_ENABLE_UPDATER_NULL_CHECK
+                if (b == null)
+                {
+                    Debug.Log($"[UpdateManager] SlowFixedUpdate {_lastCalledSlowFixedUpdateIndex} is null");
+                    return;
+                }
+#endif
+
                 b.SendCustomEvent("_SlowFixedUpdate");
             }
         }
@@ -76,6 +111,14 @@ namespace DerpyNewbie.Common
             for (var i = 0; i < _postLateUpdateBehavioursCount; i++)
             {
                 var b = _postLateUpdateBehaviours[i];
+#if NEWBIECOMMONS_ENABLE_UPDATER_NULL_CHECK
+                if (b == null)
+                {
+                    Debug.Log($"[UpdateManager] PostLateUpdate {i} is null");
+                    continue;
+                }
+#endif
+
                 b.SendCustomEvent("_PostLateUpdate");
             }
 
@@ -86,9 +129,21 @@ namespace DerpyNewbie.Common
                     _lastCalledSlowPostLateUpdateIndex = 0;
 
                 var b = _slowPostLateUpdateBehaviours[_lastCalledSlowPostLateUpdateIndex];
+#if NEWBIECOMMONS_ENABLE_UPDATER_NULL_CHECK
+                if (b == null)
+                {
+                    Debug.Log($"[UpdateManager] SlowPostLateUpdate {_lastCalledSlowPostLateUpdateIndex} is null");
+                    return;
+                }
+#endif
+
                 b.SendCustomEvent("_SlowPostLateUpdate");
             }
         }
+
+        #endregion
+
+        #region Internals
 
         private void _EnsureInit()
         {
@@ -148,6 +203,15 @@ namespace DerpyNewbie.Common
             return true;
         }
 
+        #endregion
+
+        #region PublicAPI
+
+        /// <summary>
+        /// Subscribes <paramref name="behaviour"/> to <c>_Update</c> event call
+        /// </summary>
+        /// <param name="behaviour">A behaviour which will subscribe to the event</param>
+        [PublicAPI]
         public void SubscribeUpdate(UdonSharpBehaviour behaviour)
         {
             _EnsureInit();
@@ -157,6 +221,11 @@ namespace DerpyNewbie.Common
             _AddBehaviour(_updateBehavioursCount++, behaviour, _updateBehaviours, out _updateBehaviours);
         }
 
+        /// <summary>
+        /// Unsubscribes <paramref name="behaviour"/> from <c>_Update</c> event call
+        /// </summary>
+        /// <param name="behaviour">A behaviour which will unsubscribe from the event</param>
+        [PublicAPI]
         public void UnsubscribeUpdate(UdonSharpBehaviour behaviour)
         {
             _EnsureInit();
@@ -167,6 +236,15 @@ namespace DerpyNewbie.Common
                 --_updateBehavioursCount;
         }
 
+        /// <summary>
+        /// Subscribes <paramref name="behaviour"/> to <c>_SlowUpdate</c> event call
+        /// </summary>
+        /// <remarks>
+        /// This event will called one-by-one every <c>_Update</c> call.
+        /// meaning <see cref="Time.deltaTime"/> will not work. 
+        /// </remarks>
+        /// <param name="behaviour">A behaviour which will subscribe to the event</param>
+        [PublicAPI]
         public void SubscribeSlowUpdate(UdonSharpBehaviour behaviour)
         {
             _EnsureInit();
@@ -176,6 +254,11 @@ namespace DerpyNewbie.Common
             _AddBehaviour(_slowUpdateBehavioursCount++, behaviour, _slowUpdateBehaviours, out _slowUpdateBehaviours);
         }
 
+        /// <summary>
+        /// Unsubscribes <paramref name="behaviour"/> from <c>_SlowUpdate</c> event call
+        /// </summary>
+        /// <param name="behaviour">A behaviour which will unsubscribe from the event</param>
+        [PublicAPI]
         public void UnsubscribeSlowUpdate(UdonSharpBehaviour behaviour)
         {
             _EnsureInit();
@@ -186,6 +269,11 @@ namespace DerpyNewbie.Common
                 --_slowUpdateBehavioursCount;
         }
 
+        /// <summary>
+        /// Subscribes <paramref name="behaviour"/> to <c>_PostLateUpdate</c> event call
+        /// </summary>
+        /// <param name="behaviour">A behaviour which will subscribe to the event</param>
+        [PublicAPI]
         public void SubscribePostLateUpdate(UdonSharpBehaviour behaviour)
         {
             _EnsureInit();
@@ -196,6 +284,11 @@ namespace DerpyNewbie.Common
                 out _postLateUpdateBehaviours);
         }
 
+        /// <summary>
+        /// Unsubscribes <paramref name="behaviour"/> from <c>_PostLateUpdate</c> event call
+        /// </summary>
+        /// <param name="behaviour">A behaviour which will unsubscribe from the event</param>
+        [PublicAPI]
         public void UnsubscribePostLateUpdate(UdonSharpBehaviour behaviour)
         {
             _EnsureInit();
@@ -206,6 +299,15 @@ namespace DerpyNewbie.Common
                 --_postLateUpdateBehavioursCount;
         }
 
+        /// <summary>
+        /// Subscribes <paramref name="behaviour"/> to <c>_PostLateUpdate</c> event call
+        /// </summary>
+        /// <remarks>
+        /// This event will called one-by-one every <c>_PostLateUpdate</c> call.
+        /// meaning <see cref="Time.deltaTime"/> will not work. 
+        /// </remarks>
+        /// <param name="behaviour">A behaviour which will subscribe to the event</param>
+        [PublicAPI]
         public void SubscribeSlowPostLateUpdate(UdonSharpBehaviour behaviour)
         {
             _EnsureInit();
@@ -216,6 +318,11 @@ namespace DerpyNewbie.Common
                 out _slowPostLateUpdateBehaviours);
         }
 
+        /// <summary>
+        /// Unsubscribes <paramref name="behaviour"/> from <c>_SlowLateUpdate</c> event call
+        /// </summary>
+        /// <param name="behaviour">A behaviour which will unsubscribe from the event</param>
+        [PublicAPI]
         public void UnsubscribeSlowLateUpdate(UdonSharpBehaviour behaviour)
         {
             _EnsureInit();
@@ -226,6 +333,11 @@ namespace DerpyNewbie.Common
                 --_slowPostLateUpdateBehavioursCount;
         }
 
+        /// <summary>
+        /// Subscribes <paramref name="behaviour"/> to <c>_FixedUpdate</c> event call
+        /// </summary>
+        /// <param name="behaviour">A behaviour which will subscribe to the event</param>
+        [PublicAPI]
         public void SubscribeFixedUpdate(UdonSharpBehaviour behaviour)
         {
             _EnsureInit();
@@ -235,6 +347,11 @@ namespace DerpyNewbie.Common
             _AddBehaviour(_fixedUpdateBehavioursCount++, behaviour, _fixedUpdateBehaviours, out _fixedUpdateBehaviours);
         }
 
+        /// <summary>
+        /// Unsubscribes <paramref name="behaviour"/> from <c>_FixedUpdate</c> event call
+        /// </summary>
+        /// <param name="behaviour">A behaviour which will unsubscribe from the event</param>
+        [PublicAPI]
         public void UnsubscribeFixedUpdate(UdonSharpBehaviour behaviour)
         {
             _EnsureInit();
@@ -245,6 +362,15 @@ namespace DerpyNewbie.Common
                 --_fixedUpdateBehavioursCount;
         }
 
+        /// <summary>
+        /// Subscribes <paramref name="behaviour"/> to <c>_SlowFixedUpdate</c> event call
+        /// </summary>
+        /// <remarks>
+        /// This event will called one-by-one every <c>_SlowFixedUpdate</c> call.
+        /// meaning <see cref="Time.deltaTime"/> will not work. 
+        /// </remarks>
+        /// <param name="behaviour">A behaviour which will subscribe to the event</param>
+        [PublicAPI]
         public void SubscribeSlowFixedUpdate(UdonSharpBehaviour behaviour)
         {
             _EnsureInit();
@@ -255,6 +381,11 @@ namespace DerpyNewbie.Common
                 out _slowFixedUpdateBehaviours);
         }
 
+        /// <summary>
+        /// Unsubscribes <paramref name="behaviour"/> from <c>_SlowFixedUpdate</c> event call
+        /// </summary>
+        /// <param name="behaviour">A behaviour which will unsubscribe from the event</param>
+        [PublicAPI]
         public void UnsubscribeSlowFixedUpdate(UdonSharpBehaviour behaviour)
         {
             _EnsureInit();
@@ -264,5 +395,7 @@ namespace DerpyNewbie.Common
             if (_RemoveBehaviour(behaviour, _slowFixedUpdateBehaviours, out _slowFixedUpdateBehaviours))
                 --_slowFixedUpdateBehavioursCount;
         }
+
+        #endregion
     }
 }
