@@ -1,0 +1,25 @@
+﻿name: Dispatch vpm-repos build
+
+on:
+  workflow_dispatch:
+  workflow_run:
+    workflows: [Build Release]
+    types:
+      - completed
+    release:
+      types: [published, created, edited, unpublished, deleted, released]
+
+permissions:
+  id-token: write
+
+jobs:
+  dispatch-workflow:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Request repository dispatch
+        run: |
+          curl -X POST https://api.github.com/repos/derpynewbie/vpm-repos/dispatches \
+          -H 'Accept: application/vnd.github.everest-preview+json' \
+          -u ${{ secrets.ACTIONS_KEY }} \
+          --data '{"event_type": "Build Repo Listing", "client_payload": { "repository": "'"$GITHUB_REPOSITORY"'" }}'
+      - uses: actions/checkout@v3
