@@ -113,6 +113,32 @@ namespace DerpyNewbie.Common.Editor
 
             return sb.ToString();
         }
+
+        public static void DoPrePlayInject(PlayModeStateChange change)
+        {
+            if (!NewbieInjectConfig.InjectOnPlay || BuildPipeline.isBuildingPlayer ||
+                UnityEngine.Object.FindObjectOfType<PipelineSaver>() != null ||
+                change != PlayModeStateChange.ExitingEditMode)
+                return;
+
+            Log("Pre-Play injection started.");
+            Inject(SceneManager.GetActiveScene());
+            Log("Pre-Play injection ended.");
+        }
+
+        public static bool DoPreBuildInject(VRCSDKRequestedBuildType requestedBuildType)
+        {
+            if (!NewbieInjectConfig.InjectOnBuild)
+                return true;
+
+            if (requestedBuildType == VRCSDKRequestedBuildType.Avatar)
+                return true;
+
+            Log("Pre-Build injection started.");
+            Inject(SceneManager.GetActiveScene());
+            Log("Pre-Build injection ended.");
+            return true;
+        }
     }
 
     public static class NewbieInjectConfig
@@ -145,49 +171,6 @@ namespace DerpyNewbie.Common.Editor
         private static void SetConfigValue(string name, bool value)
         {
             EditorUserSettings.SetConfigValue(name, value.ToString());
-        }
-    }
-
-    public class NewbieCommonsBuildInject : IVRCSDKBuildRequestedCallback
-    {
-        public int callbackOrder => 0;
-
-        public bool OnBuildRequested(VRCSDKRequestedBuildType requestedBuildType)
-        {
-            if (!NewbieInjectConfig.InjectOnBuild)
-                return true;
-
-            if (requestedBuildType == VRCSDKRequestedBuildType.Avatar)
-            {
-                LogError("Build Injection not supported with Avatar Build.");
-                return true;
-            }
-
-            Log("Pre-Build injection started.");
-            NewbieInjectProcessor.Inject(SceneManager.GetActiveScene());
-            Log("Pre-Build injection ended.");
-            return true;
-        }
-    }
-
-    [InitializeOnLoad]
-    public static class NewbieCommonsPlayInject
-    {
-        static NewbieCommonsPlayInject()
-        {
-            EditorApplication.playModeStateChanged += PlayModeStateChanged;
-        }
-
-        private static void PlayModeStateChanged(PlayModeStateChange change)
-        {
-            if (!NewbieInjectConfig.InjectOnPlay || BuildPipeline.isBuildingPlayer ||
-                UnityEngine.Object.FindObjectOfType<PipelineSaver>() != null ||
-                change != PlayModeStateChange.ExitingEditMode)
-                return;
-
-            Log("Pre-Play injection started.");
-            NewbieInjectProcessor.Inject(SceneManager.GetActiveScene());
-            Log("Pre-Play injection ended.");
         }
     }
 }
