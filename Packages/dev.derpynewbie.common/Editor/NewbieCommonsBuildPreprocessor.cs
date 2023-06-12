@@ -1,4 +1,6 @@
-﻿using UnityEditor;
+﻿using DerpyNewbie.Common.Editor.Inspector;
+using UnityEditor;
+using UnityEngine;
 using VRC.SDKBase.Editor.BuildPipeline;
 
 namespace DerpyNewbie.Common.Editor
@@ -14,10 +16,12 @@ namespace DerpyNewbie.Common.Editor
         private static void PlayModeStateChanged(PlayModeStateChange change)
         {
             var isBuilding = BuildPipeline.isBuildingPlayer ||
-                             UnityEngine.Object.FindObjectOfType<PipelineSaver>() != null ||
+                             Object.FindObjectOfType<PipelineSaver>() != null ||
                              change != PlayModeStateChange.ExitingEditMode;
             if (isBuilding)
                 return;
+
+            RoleManagerEditor.DoPreBuildCheck();
             NewbieInjectProcessor.DoPrePlayInject(change);
         }
 
@@ -25,6 +29,12 @@ namespace DerpyNewbie.Common.Editor
 
         public bool OnBuildRequested(VRCSDKRequestedBuildType requestedBuildType)
         {
+            if (!RoleManagerEditor.DoPreBuildCheck())
+            {
+                Debug.LogError("[NewbieCommonsBuildPreprocessor] RoleManager pre build check failed");
+                return false;
+            }
+
             NewbieInjectProcessor.DoPreBuildInject(requestedBuildType);
             return true;
         }
