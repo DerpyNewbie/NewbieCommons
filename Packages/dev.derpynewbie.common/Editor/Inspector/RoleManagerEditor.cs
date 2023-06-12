@@ -11,7 +11,7 @@ namespace DerpyNewbie.Common.Editor.Inspector
     [CustomEditor(typeof(RoleManager))]
     public class RoleManagerEditor : UnityEditor.Editor
     {
-        private List<KeyValuePair<string, MessageType>> _issues = new List<KeyValuePair<string, MessageType>>();
+        private List<Issue> _issues = new List<Issue>();
 
         private ReorderableList _rolesList;
         private List<int> _rolesExpanded = new List<int>();
@@ -29,7 +29,6 @@ namespace DerpyNewbie.Common.Editor.Inspector
 
             serializedObject.Update();
 
-
             var roles = serializedObject.FindProperty("availableRoles");
             var players = serializedObject.FindProperty("players");
 
@@ -40,6 +39,8 @@ namespace DerpyNewbie.Common.Editor.Inspector
                     $"Default role will be '{(defaultRoleData != null ? defaultRoleData.RoleName : null)}'\n{players.arraySize} players will be processed with assigned roles.",
                     MessageType.Info);
             }
+
+            EditorGUILayout.Space();
 
             if (_rolesList == null || _playersList == null)
             {
@@ -119,36 +120,10 @@ namespace DerpyNewbie.Common.Editor.Inspector
                         var menu = new GenericMenu();
                         menu.AddItem(new GUIContent("Add and assign generated RoleData"), false, () =>
                         {
-                            // Generate new RoleData GameObject
-                            var go = new GameObject($"GeneratedRole-{list.count}");
-                            var roleData = go.AddUdonSharpComponent<RoleData>();
-                            var serializedRoleData = new SerializedObject(roleData);
-
-                            serializedRoleData.FindProperty("roleName").stringValue = go.name;
-                            serializedRoleData.ApplyModifiedProperties();
-
-                            // Set parent to RoleManager/Roles
-                            var roleManagerTransform = ((RoleManager)target).transform;
-                            var rolesParent = roleManagerTransform.Find("Roles");
-                            if (rolesParent == null)
-                            {
-                                Debug.Log($"[RoleManagerEditor] Creating Roles parent", roleManagerTransform);
-                                rolesParent = new GameObject("Roles").transform;
-                                rolesParent.SetParent(roleManagerTransform);
-                            }
-
-                            go.transform.SetParent(rolesParent);
-
-                            // Add generated RoleData to roles array
-                            ++roles.arraySize;
-                            var index = roles.arraySize - 1;
-                            var element = roles.GetArrayElementAtIndex(index);
-
-                            element.objectReferenceValue = roleData;
-                            element.serializedObject.ApplyModifiedProperties();
+                            GenerateRole(roles);
 
                             // Auto-expand element
-                            _rolesExpanded.Add(index);
+                            _rolesExpanded.Add(roles.arraySize - 1);
 
                             FindIssues();
                         });
@@ -255,36 +230,10 @@ namespace DerpyNewbie.Common.Editor.Inspector
                         var menu = new GenericMenu();
                         menu.AddItem(new GUIContent("Add and assign generated RolePlayerData"), false, () =>
                         {
-                            // Generate new RolePlayerData GameObject
-                            var go = new GameObject($"GeneratedPlayer-{list.count}");
-                            var playerData = go.AddUdonSharpComponent<RolePlayerData>();
-                            var serializedPlayerData = new SerializedObject(playerData);
-
-                            serializedPlayerData.FindProperty("displayName").stringValue = go.name;
-                            serializedPlayerData.ApplyModifiedProperties();
-
-                            // Set parent to RoleManager/Players
-                            var roleManagerTransform = ((RoleManager)target).transform;
-                            var playersParent = roleManagerTransform.Find("Players");
-                            if (playersParent == null)
-                            {
-                                Debug.Log($"[RoleManagerEditor] Creating Players parent", roleManagerTransform);
-                                playersParent = new GameObject("Players").transform;
-                                playersParent.SetParent(roleManagerTransform);
-                            }
-
-                            go.transform.SetParent(playersParent);
-
-                            // Add generated RolePlayerData to roles array
-                            ++players.arraySize;
-                            var index = players.arraySize - 1;
-                            var element = players.GetArrayElementAtIndex(index);
-
-                            element.objectReferenceValue = playerData;
-                            element.serializedObject.ApplyModifiedProperties();
+                            GeneratePlayer(players);
 
                             // Auto-expand element
-                            _playersExpanded.Add(index);
+                            _playersExpanded.Add(players.arraySize - 1);
 
                             FindIssues();
                         });
@@ -326,68 +275,192 @@ namespace DerpyNewbie.Common.Editor.Inspector
                 FindIssues();
         }
 
+        private static RoleData GenerateRole(SerializedProperty roles)
+        {
+            // Generate new RoleData GameObject
+            var go = new GameObject($"GeneratedRole-{roles.arraySize}");
+            var roleData = go.AddUdonSharpComponent<RoleData>();
+            var serializedRoleData = new SerializedObject(roleData);
+
+            serializedRoleData.FindProperty("roleName").stringValue = go.name;
+            serializedRoleData.ApplyModifiedProperties();
+
+            // Set parent to RoleManager/Roles
+            var roleManagerTransform = ((RoleManager)roles.serializedObject.targetObject).transform;
+            var rolesParent = roleManagerTransform.Find("Roles");
+            if (rolesParent == null)
+            {
+                NewbieCommonsEditorUtil.Log("Creating Roles parent", roleManagerTransform);
+                rolesParent = new GameObject("Roles").transform;
+                rolesParent.SetParent(roleManagerTransform);
+            }
+
+            go.transform.SetParent(rolesParent);
+
+            // Add generated RoleData to roles array
+            ++roles.arraySize;
+            var index = roles.arraySize - 1;
+            var element = roles.GetArrayElementAtIndex(index);
+
+            element.objectReferenceValue = roleData;
+            element.serializedObject.ApplyModifiedProperties();
+
+            NewbieCommonsEditorUtil.Log($"Created new role `{roleData.RoleName}`", roleData);
+            return roleData;
+        }
+
+        private static RolePlayerData GeneratePlayer(SerializedProperty players)
+        {
+            // Generate new RolePlayerData GameObject
+            var go = new GameObject($"GeneratedPlayer-{players.arraySize}");
+            var playerData = go.AddUdonSharpComponent<RolePlayerData>();
+            var serializedPlayerData = new SerializedObject(playerData);
+
+            serializedPlayerData.FindProperty("displayName").stringValue = go.name;
+            serializedPlayerData.ApplyModifiedProperties();
+
+            // Set parent to RoleManager/Players
+            var roleManagerTransform = ((RoleManager)players.serializedObject.targetObject).transform;
+            var playersParent = roleManagerTransform.Find("Players");
+            if (playersParent == null)
+            {
+                NewbieCommonsEditorUtil.Log("Creating Players parent", roleManagerTransform);
+                playersParent = new GameObject("Players").transform;
+                playersParent.SetParent(roleManagerTransform);
+            }
+
+            go.transform.SetParent(playersParent);
+
+            // Add generated RolePlayerData to roles array
+            ++players.arraySize;
+            var index = players.arraySize - 1;
+            var element = players.GetArrayElementAtIndex(index);
+
+            element.objectReferenceValue = playerData;
+            element.serializedObject.ApplyModifiedProperties();
+
+            NewbieCommonsEditorUtil.Log($"Created new role player data `{playerData.DisplayName}`", playerData);
+            return playerData;
+        }
+
         private bool DrawIssues()
         {
             if (_issues.Count == 0)
                 return true;
 
-            foreach (var kvp in _issues)
-            {
-                EditorGUILayout.HelpBox(kvp.Key, kvp.Value);
-            }
+            foreach (var issue in _issues)
+                issue.HelpBoxWithButton();
 
             return false;
         }
 
         private void FindIssues()
         {
-            _issues = new List<KeyValuePair<string, MessageType>>();
+            _issues = new List<Issue>();
 
-            var roles = serializedObject.FindProperty("availableRoles");
-            if (roles.arraySize == 0)
+            if (serializedObject.FindProperty("availableRoles").arraySize == 0)
             {
-                _issues.Add(new KeyValuePair<string, MessageType>(
+                _issues.Add(new Issue(
                     "No available roles assigned will cause crash at runtime.\nPlease add default role!",
-                    MessageType.Error
+                    MessageType.Error,
+                    () =>
+                    {
+                        AutoFixNoDefaultRoleDefined(serializedObject);
+                        FindIssues();
+                    }
                 ));
             }
 
-            if (HasEmptyRolePlayer())
+            if (HasNullInProperties(serializedObject))
             {
-                _issues.Add(new KeyValuePair<string, MessageType>(
-                    "RolePlayerData with no role assigned will cause crash at runtime.\nPlease assign valid roles!",
-                    MessageType.Error
-                ));
-            }
-
-            if (HasNullInProperties())
-            {
-                _issues.Add(new KeyValuePair<string, MessageType>(
+                _issues.Add(new Issue(
                     "Having 'None' in setting will cause issues at runtime.\nPlease assign valid object!",
-                    MessageType.Error
+                    MessageType.Error,
+                    () =>
+                    {
+                        AutoFixNullProperty(serializedObject);
+                        FindIssues();
+                    }
                 ));
             }
 
-            if (HasDuplicatedDisplayName())
+            if (HasEmptyRolePlayer(serializedObject))
             {
-                _issues.Add(new KeyValuePair<string, MessageType>(
+                _issues.Add(new Issue(
+                    "RolePlayerData with no role assigned will cause crash at runtime.\nPlease assign valid roles!",
+                    MessageType.Error,
+                    () =>
+                    {
+                        AutoFixEmptyRoleAssignedForPlayer(serializedObject);
+                        FindIssues();
+                    }
+                ));
+            }
+
+            if (HasDuplicatedDisplayName(serializedObject))
+            {
+                _issues.Add(new Issue(
                     "There is RolePlayerData with same display name assigned.\nThis may result in confusing behaviour!",
                     MessageType.Warning
                 ));
             }
 
-            if (HasDuplicatedRoleName())
+            if (HasDuplicatedRoleName(serializedObject))
             {
-                _issues.Add(new KeyValuePair<string, MessageType>(
+                _issues.Add(new Issue(
                     "There is RoleData with same name assigned.\nThis may result in confusing behaviour!",
                     MessageType.Warning
                 ));
             }
         }
 
-        private bool HasDuplicatedDisplayName()
+        private static void AutoFixNullProperty(SerializedObject so)
         {
-            var players = serializedObject.FindProperty("players");
+            var rolesRemoved = RemoveNullsInArrayProperty(so.FindProperty("availableRoles"));
+            var playersRemoved = RemoveNullsInArrayProperty(so.FindProperty("players"));
+
+            NewbieCommonsEditorUtil.Log(
+                $"Stripped {rolesRemoved} role elements, {playersRemoved} player elements for being null");
+        }
+
+        private static void AutoFixEmptyRoleAssignedForPlayer(SerializedObject so)
+        {
+            var roles = so.FindProperty("availableRoles");
+            if (roles.arraySize == 0)
+                throw new ArgumentException("Default role does not exist. cannot auto fix!");
+            var defaultRole = roles.GetArrayElementAtIndex(0).objectReferenceValue;
+
+            var players = so.FindProperty("players");
+            for (var i = 0; i < players.arraySize; i++)
+            {
+                var element = players.GetArrayElementAtIndex(i);
+                var soElement = new SerializedObject(element.objectReferenceValue);
+                var playerRoles = soElement.FindProperty("roles");
+                RemoveNullsInArrayProperty(playerRoles);
+                if (playerRoles.arraySize == 0)
+                {
+                    ++playerRoles.arraySize;
+                    var roleElement = playerRoles.GetArrayElementAtIndex(0);
+                    roleElement.objectReferenceValue = defaultRole;
+                    NewbieCommonsEditorUtil.Log(
+                        $"Assigned default role to {(element.objectReferenceValue as Component)?.name}");
+                    soElement.ApplyModifiedProperties();
+                }
+            }
+        }
+
+        private static void AutoFixNoDefaultRoleDefined(SerializedObject so)
+        {
+            var roles = so.FindProperty("availableRoles");
+            if (roles.arraySize > 0)
+                throw new ArgumentException("Default role already exists");
+
+            GenerateRole(roles);
+        }
+
+        private static bool HasDuplicatedDisplayName(SerializedObject so)
+        {
+            var players = so.FindProperty("players");
             var seenDisplayNames = new List<string>();
             for (int i = 0; i < players.arraySize; i++)
             {
@@ -409,9 +482,9 @@ namespace DerpyNewbie.Common.Editor.Inspector
             return false;
         }
 
-        private bool HasDuplicatedRoleName()
+        private static bool HasDuplicatedRoleName(SerializedObject so)
         {
-            var roles = serializedObject.FindProperty("availableRoles");
+            var roles = so.FindProperty("availableRoles");
             var seenRoleNames = new List<string>();
             for (int i = 0; i < roles.arraySize; i++)
             {
@@ -433,9 +506,9 @@ namespace DerpyNewbie.Common.Editor.Inspector
             return false;
         }
 
-        private bool HasEmptyRolePlayer()
+        private static bool HasEmptyRolePlayer(SerializedObject so)
         {
-            var players = serializedObject.FindProperty("players");
+            var players = so.FindProperty("players");
             for (int i = 0; i < players.arraySize; i++)
             {
                 var element = players.GetArrayElementAtIndex(i);
@@ -457,15 +530,15 @@ namespace DerpyNewbie.Common.Editor.Inspector
             return false;
         }
 
-        private bool HasNullInProperties()
+        private static bool HasNullInProperties(SerializedObject so)
         {
-            var roles = serializedObject.FindProperty("availableRoles");
-            var players = serializedObject.FindProperty("players");
+            var roles = so.FindProperty("availableRoles");
+            var players = so.FindProperty("players");
 
             return HasNullInArrayProperty(roles) || HasNullInArrayProperty(players);
         }
 
-        private bool HasNullInArrayProperty(SerializedProperty arrayProperty)
+        private static bool HasNullInArrayProperty(SerializedProperty arrayProperty)
         {
             if (!arrayProperty.isArray) throw new ArgumentException("Non-array property was provided");
             for (var i = 0; i < arrayProperty.arraySize; i++)
@@ -476,6 +549,103 @@ namespace DerpyNewbie.Common.Editor.Inspector
             }
 
             return false;
+        }
+
+        private static int RemoveNullsInArrayProperty(SerializedProperty arrayProperty)
+        {
+            if (!arrayProperty.isArray) throw new ArgumentException("Non-array property was provided");
+            var removed = 0;
+            for (int i = 0; i < arrayProperty.arraySize; i++)
+            {
+                var element = arrayProperty.GetArrayElementAtIndex(i);
+                if (element.objectReferenceValue != null)
+                    continue;
+
+                var lastSize = arrayProperty.arraySize;
+                arrayProperty.DeleteArrayElementAtIndex(i);
+                if (arrayProperty.arraySize == lastSize)
+                    arrayProperty.DeleteArrayElementAtIndex(i);
+
+                --i;
+                ++removed;
+            }
+
+            return removed;
+        }
+
+        public static bool DoPreBuildCheck()
+        {
+            var roleManagers = FindObjectsOfType<RoleManager>();
+            if (roleManagers.Length == 0)
+                return true;
+
+            if (roleManagers.Length > 1)
+            {
+                foreach (var r in roleManagers)
+                {
+                    NewbieCommonsEditorUtil.Log(
+                        $"Found RoleManager at {VRC.Core.ExtensionMethods.GetHierarchyPath(r.transform)}",
+                        r
+                    );
+                }
+
+                if (!EditorUtility.DisplayDialog(
+                        "RoleManager Pre Build Check",
+                        "Multiple RoleManagers found in scene,\n" +
+                        "This may cause issues since only one of them will be used for role resolving.\n" +
+                        "Are you sure you want to continue?",
+                        "Yes", "Cancel"
+                    ))
+                    return false;
+            }
+
+            foreach (var roleManager in roleManagers)
+            {
+                var so = new SerializedObject(roleManager);
+                var title = roleManagers.Length == 0
+                    ? "RoleManager Pre Build Check"
+                    : $"RoleManager Pre Build Check ({VRC.Core.ExtensionMethods.GetHierarchyPath(roleManager.transform)})";
+                if (HasNullInProperties(so))
+                {
+                    if (!EditorUtility.DisplayDialog(
+                            title,
+                            "Having nulls in properties will cause crashes runtime.\n" +
+                            "This issue needs to be fixed before continuing!",
+                            "Try Auto Fix", "Cancel"
+                        ))
+                        return false;
+
+                    AutoFixNullProperty(so);
+                }
+
+                if (so.FindProperty("availableRoles").arraySize == 0)
+                {
+                    if (!EditorUtility.DisplayDialog(
+                            title,
+                            "No default roles assigned will cause crashes runtime.\n" +
+                            "This issue needs to be fixed before continuing!",
+                            "Try Auto Fix", "Cancel"
+                        ))
+                        return false;
+
+                    AutoFixEmptyRoleAssignedForPlayer(so);
+                }
+
+                if (HasEmptyRolePlayer(so))
+                {
+                    if (!EditorUtility.DisplayDialog(
+                            title,
+                            "Having empty roles assigned to player will cause crashes runtime.\n" +
+                            "This issue needs to be fixed before continuing!",
+                            "Try Auto Fix", "Cancel"
+                        ))
+                        return false;
+
+                    AutoFixEmptyRoleAssignedForPlayer(so);
+                }
+            }
+
+            return true;
         }
     }
 }
