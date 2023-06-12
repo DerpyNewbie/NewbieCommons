@@ -13,6 +13,11 @@ namespace DerpyNewbie.Common.Editor
 
         private static void PlayModeStateChanged(PlayModeStateChange change)
         {
+            var isBuilding = BuildPipeline.isBuildingPlayer ||
+                             UnityEngine.Object.FindObjectOfType<PipelineSaver>() != null ||
+                             change != PlayModeStateChange.ExitingEditMode;
+            if (isBuilding)
+                return;
             NewbieInjectProcessor.DoPrePlayInject(change);
         }
 

@@ -116,9 +116,7 @@ namespace DerpyNewbie.Common.Editor
 
         public static void DoPrePlayInject(PlayModeStateChange change)
         {
-            if (!NewbieInjectConfig.InjectOnPlay || BuildPipeline.isBuildingPlayer ||
-                UnityEngine.Object.FindObjectOfType<PipelineSaver>() != null ||
-                change != PlayModeStateChange.ExitingEditMode)
+            if (!NewbieInjectConfig.InjectOnPlay)
                 return;
 
             Log("Pre-Play injection started.");
