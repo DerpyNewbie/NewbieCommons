@@ -10,9 +10,16 @@ Useful utility set of U# scripts, such as:
 Docs will be written later on. I'm lazy!
 
 ## How to Import
-### Import using Unity Package Manager
-1. Make sure [Git](https://git-scm.com/) is installed on your PC
-2. Open Unity Package Manager
-3. Press upper left `+` button
-4. Do `Add package from git URL` with this `https://github.com/DerpyNewbie/NewbieCommons.git?path=/Packages/dev.derpynewbie.common`
-5. Done!
+
+### Import using VCC
+
+1. Open this [link](https://derpynewbie.github.io/vpm-repos/) and add repository to your VCC.
+2. Add Newbie Commons package from DerpyNewbie repos
+3. Done!
+
+### Import using unitypackage
+
+1. Open [releases](https://github.com/DerpyNewbie/NewbieCommons/releases)
+2. Download unitypackage in assets.
+3. Import downloaded unitypackage to your project.
+4. Done!
