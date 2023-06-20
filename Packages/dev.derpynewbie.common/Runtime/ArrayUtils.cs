@@ -21,6 +21,13 @@ namespace DerpyNewbie.Common
         }
 
         [PublicAPI] [Pure]
+        public static T[] AddAsSet<T>(this T[] arr, T item, out bool result)
+        {
+            result = !arr.ContainsItem(item);
+            return !result ? arr : arr.AddAsList(item);
+        }
+
+        [PublicAPI] [Pure]
         public static T[] InsertItemAtIndex<T>(this T[] arr, int index, T item)
         {
             bool _;
