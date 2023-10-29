@@ -17,9 +17,7 @@
     }
   ],
   "vpmDependencies": {
-    "com.vrchat.worlds": ">=3.2.0 <=3.3.x",
-    "com.vrchat.udonsharp": "~1.1.0"
+    "com.vrchat.worlds": "^3.4.0"
   },
-  "url": "https://github.com/derpynewbie/NewbieCommons/releases/download/0.3.6/dev.derpynewbie.common.zip",
   "hideInEditor": false
 }
