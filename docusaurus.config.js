@@ -16,12 +16,12 @@ const config = {
   url: 'https://derpynewbie.dev',
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
-  baseUrl: '/docs-newbie-commons/',
+  baseUrl: '/NewbieCommons/',
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
   organizationName: 'DerpyNewbie', // Usually your GitHub org/user name.
-  projectName: 'docs-NewbieCommons', // Usually your repo name.
+  projectName: 'NewbieCommons', // Usually your repo name.
 
   onBrokenLinks: 'warn',
   onBrokenMarkdownLinks: 'warn',
@@ -45,14 +45,14 @@ const config = {
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
           editUrl:
-            'https://github.com/derpynewbie/docs-NewbieCommons/tree/main/',
+            'https://github.com/derpynewbie/NewbieCommons/tree/docs/',
         },
         blog: {
           showReadingTime: true,
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
           editUrl:
-            'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
+            'https://github.com/derpynewbie/NewbieCommons/tree/main/packages/create-docusaurus/templates/shared/',
         },
         theme: {
           customCss: './src/css/custom.css',
@@ -65,7 +65,7 @@ const config = {
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
       // Replace with your project's social card
-      image: 'img/docusaurus-social-card.jpg',
+      image: 'img/apple-touch-icon.png',
       navbar: {
         title: 'NewbieCommons',
         items: [
@@ -77,7 +77,7 @@ const config = {
           },
           {to: '/blog', label: 'Blog', position: 'left'},
           {
-            href: 'https://github.com/derpynewbie/docs-newbie-commons',
+            href: 'https://github.com/derpynewbie/NewbieCommons/',
             label: 'GitHub',
             position: 'right',
           },
@@ -92,11 +92,7 @@ const config = {
           },
           {
             label: `NewbieCommons`,
-            href: `https://github.com/derpynewbie/newbie-commons/`,
-          },
-          {
-            label: `NewbieCommons-docs`,
-            href: `https://github.com/derpynewbie/docs-newbie-commons/`,
+            href: `https://github.com/derpynewbie/NewbieCommons/`,
           }
         ],
         copyright: `Copyright © ${new Date().getFullYear()} DerpyNewbie. Built with Docusaurus.`,
