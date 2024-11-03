@@ -11,6 +11,7 @@ namespace DerpyNewbie.Common.ObjectPool
     public class ObjectPoolProxy : UdonSharpBehaviour
     {
         private VRCObjectPool _pool;
+
         [SerializeField]
         private Transform spawnTarget;
 
@@ -33,26 +34,29 @@ namespace DerpyNewbie.Common.ObjectPool
             SendCustomNetworkEvent(NetworkEventTarget.Owner, nameof(OwnerOnly_ReturnAll));
         }
 
-        public void OwnerOnly_Spawn()
+        [CanBeNull]
+        public GameObject OwnerOnly_Spawn()
         {
             if (!Networking.IsOwner(gameObject))
-                return;
+                return null;
 
             var obj = _pool.TryToSpawn();
             if (obj == null)
             {
                 Debug.LogError("[ObjectPoolProxy] Could not spawn object");
-                return;
+                return null;
             }
 
             if (spawnTarget != null)
                 obj.transform.SetPositionAndRotation(spawnTarget.position, spawnTarget.rotation);
+
+            return obj;
         }
 
-        public void OwnerOnly_ReturnAll()
+        public bool OwnerOnly_ReturnAll()
         {
             if (!Networking.IsOwner(gameObject))
-                return;
+                return false;
 
             var objs = _pool.Pool;
             foreach (var o in objs)
@@ -62,6 +66,8 @@ namespace DerpyNewbie.Common.ObjectPool
                     o.GetComponent<VRC_Pickup>().Drop();
                 _pool.Return(o);
             }
+
+            return true;
         }
 
         public void OwnerOnly_Return(GameObject target)
