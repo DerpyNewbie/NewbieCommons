@@ -3,6 +3,7 @@ using VRC.SDKBase;
 
 namespace DerpyNewbie.Common.Invoker
 {
+    [AddComponentMenu("Newbie Commons/Invoker/On Player Trigger Enter Event")]
     public class OnPlayerTriggerEnterInvoker : CommonInvokerBase
     {
         [SerializeField]

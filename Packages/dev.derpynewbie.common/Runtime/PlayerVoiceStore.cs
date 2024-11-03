@@ -4,6 +4,7 @@ using VRC.SDKBase;
 
 namespace DerpyNewbie.Common
 {
+    [AddComponentMenu("Newbie Commons/Utils/Player Voice Store")]
     [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
     public class PlayerVoiceStore : UdonSharpBehaviour
     {

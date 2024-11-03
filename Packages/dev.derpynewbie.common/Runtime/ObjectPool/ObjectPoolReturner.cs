@@ -1,9 +1,11 @@
 ﻿using UdonSharp;
 using UnityEngine;
 using VRC.SDK3.Components;
+using VRC.SDKBase;
 
 namespace DerpyNewbie.Common.ObjectPool
 {
+    [AddComponentMenu("Newbie Commons/Object Pool/Returner")]
     [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
     public class ObjectPoolReturner : UdonSharpBehaviour
     {
@@ -12,7 +14,7 @@ namespace DerpyNewbie.Common.ObjectPool
 
         private void OnCollisionEnter(Collision collision)
         {
-            if (collision == null || collision.gameObject == null)
+            if (collision == null || collision.gameObject == null || Networking.IsOwner(gameObject))
                 return;
 
             ReturnObject(collision.gameObject);

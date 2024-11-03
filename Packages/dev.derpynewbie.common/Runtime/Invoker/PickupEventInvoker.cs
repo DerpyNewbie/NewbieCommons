@@ -5,6 +5,7 @@ using VRC.SDKBase;
 
 namespace DerpyNewbie.Common.Invoker
 {
+    [AddComponentMenu("Newbie Commons/Invoker/Pickup Event")]
     public class PickupEventInvoker : CommonInvokerBase
     {
         [SerializeField] private PickupEventType eventType = PickupEventType.All;

@@ -4,6 +4,7 @@ using VRC.SDKBase;
 
 namespace DerpyNewbie.Common
 {
+    [AddComponentMenu("Newbie Commons/Utils/Local Player Follower")]
     [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
     public class LocalPlayerFollower : UdonSharpBehaviour
     {

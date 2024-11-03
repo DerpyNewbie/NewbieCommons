@@ -5,7 +5,9 @@ using UnityEngine;
 
 namespace DerpyNewbie.Common
 {
-    [UdonBehaviourSyncMode(BehaviourSyncMode.None)] [DefaultExecutionOrder(-100000)]
+    [AddComponentMenu("Newbie Commons/Utils/UpdateManager")]
+    [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
+    [DefaultExecutionOrder(-100000)]
     public class UpdateManager : UdonSharpBehaviour
     {
         private const int InitialPoolSize = 256;

@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace DerpyNewbie.Common.UI
 {
+    [AddComponentMenu("Newbie Commons/UI/Pop Up Image")]
     [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
     public class PopUpImage : UdonSharpBehaviour
     {

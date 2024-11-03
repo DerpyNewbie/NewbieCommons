@@ -3,6 +3,7 @@ using UnityEngine;
 
 namespace DerpyNewbie.Common
 {
+    [AddComponentMenu("Newbie Commons/Utils/Deactivate After Start")]
     [UdonBehaviourSyncMode(BehaviourSyncMode.NoVariableSync)]
     public class DeactivateAfterStart : UdonSharpBehaviour
     {

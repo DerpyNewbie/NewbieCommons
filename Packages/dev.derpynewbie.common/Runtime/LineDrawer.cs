@@ -9,6 +9,7 @@ namespace DerpyNewbie.Common
     /// </summary>
     /// <seealso cref="LineManager"/>
     /// <seealso cref="LineManager.Draw(Vector3[], float, float, float, Gradient)"/>
+    [AddComponentMenu("Newbie Commons/Utils/Line Drawer")]
     [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
     public class LineDrawer : UdonSharpBehaviour
     {

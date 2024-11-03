@@ -4,6 +4,7 @@ using UnityEngine.UI;
 
 namespace DerpyNewbie.Common.UI
 {
+    [AddComponentMenu("Newbie Commons/UI/Selection Button")]
     public class SelectionButton : UdonSharpBehaviour
     {
         public Image[] images;

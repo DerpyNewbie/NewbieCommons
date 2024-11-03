@@ -5,6 +5,7 @@ using VRC.SDKBase;
 
 namespace DerpyNewbie.Common
 {
+    [AddComponentMenu("Newbie Commons/Utils/Player Movement")]
     [UdonBehaviourSyncMode(BehaviourSyncMode.Manual)]
     public class PlayerMovement : UdonSharpBehaviour
     {

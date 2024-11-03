@@ -8,6 +8,7 @@ using VRC.Udon.Common;
 
 namespace DerpyNewbie.Common
 {
+    [AddComponentMenu("Newbie Commons/Utils/Megaphone")]
     [UdonBehaviourSyncMode(BehaviourSyncMode.Manual)]
     public class Megaphone : PickupEventSenderCallback
     {

@@ -7,7 +7,8 @@ using VRC.Udon.Common.Interfaces;
 
 namespace DerpyNewbie.Common.ObjectPool
 {
-    [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
+    [AddComponentMenu("Newbie Commons/Object Pool/Spawner")]
+    [UdonBehaviourSyncMode(BehaviourSyncMode.NoVariableSync)]
     public class ObjectPoolSpawner : UdonSharpBehaviour
     {
         [SerializeField] private ObjectPoolProxy targetProxy;
