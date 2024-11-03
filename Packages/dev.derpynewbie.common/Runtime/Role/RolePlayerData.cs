@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace DerpyNewbie.Common.Role
 {
+    [AddComponentMenu("Newbie Commons/Role/Player Data")]
     [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
     public class RolePlayerData : UdonSharpBehaviour
     {

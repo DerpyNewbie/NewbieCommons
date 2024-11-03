@@ -3,7 +3,9 @@ using UnityEngine;
 
 namespace DerpyNewbie.Common
 {
-    [UdonBehaviourSyncMode(BehaviourSyncMode.None)] [DefaultExecutionOrder(0)]
+    [AddComponentMenu("Newbie Commons/Utils/Translatable Message")]
+    [UdonBehaviourSyncMode(BehaviourSyncMode.None)] 
+    [DefaultExecutionOrder(0)]
     public class TranslatableMessage : UdonSharpBehaviour
     {
         [SerializeField] [InspectorName("ja-JP Message")] [TextArea(3, 10)]

@@ -5,7 +5,9 @@ using VRC.SDKBase;
 
 namespace DerpyNewbie.Common
 {
-    [RequireComponent(typeof(Collider)), UdonBehaviourSyncMode(BehaviourSyncMode.None)]
+    [AddComponentMenu("Newbie Commons/Utils/Teleporter")]
+    [RequireComponent(typeof(Collider))]
+    [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
     public class Teleporter : UdonSharpBehaviour
     {
         [SerializeField]

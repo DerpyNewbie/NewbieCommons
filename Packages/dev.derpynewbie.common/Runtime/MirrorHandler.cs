@@ -3,6 +3,7 @@ using UnityEngine;
 
 namespace DerpyNewbie.Common
 {
+    [AddComponentMenu("Newbie Commons/Utils/Mirror Handler")]
     [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
     public class MirrorHandler : UdonSharpBehaviour
     {

@@ -3,6 +3,7 @@ using UnityEngine;
 
 namespace DerpyNewbie.Common
 {
+    [AddComponentMenu("Newbie Commons/Utils/Object Player Follower")]
     [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
     public class ObjectPlayerFollower : UdonSharpBehaviour
     {

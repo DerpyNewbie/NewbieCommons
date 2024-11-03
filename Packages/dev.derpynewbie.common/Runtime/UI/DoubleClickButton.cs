@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 namespace DerpyNewbie.Common.UI
 {
+    [AddComponentMenu("Newbie Commons/UI/Double Click Button")]
     [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
     public class DoubleClickButton : UdonSharpBehaviour
     {

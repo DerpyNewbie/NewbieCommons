@@ -3,6 +3,7 @@ using UnityEngine;
 
 namespace DerpyNewbie.Common.Role
 {
+    [AddComponentMenu("Newbie Commons/Role/Role Data")]
     [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
     public class RoleData : UdonSharpBehaviour
     {

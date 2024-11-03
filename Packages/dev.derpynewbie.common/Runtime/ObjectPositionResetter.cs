@@ -4,7 +4,9 @@ using VRC.SDK3.Components;
 
 namespace DerpyNewbie.Common
 {
-    [RequireComponent(typeof(VRCPickup)), UdonBehaviourSyncMode(BehaviourSyncMode.None)]
+    [AddComponentMenu("Newbie Commons/Utils/Object Position Resetter")]
+    [RequireComponent(typeof(VRCPickup))] 
+    [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
     public class ObjectPositionResetter : UdonSharpBehaviour
     {
         private VRCPickup _pickup;

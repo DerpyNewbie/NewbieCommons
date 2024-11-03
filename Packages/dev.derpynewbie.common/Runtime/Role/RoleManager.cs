@@ -4,6 +4,7 @@ using VRC.SDKBase;
 
 namespace DerpyNewbie.Common.Role
 {
+    [AddComponentMenu("Newbie Commons/Role/Role Manager")]
     [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
     public class RoleManager : RoleProvider
     {

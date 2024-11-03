@@ -7,7 +7,9 @@ using VRC.Udon.Common.Interfaces;
 
 namespace DerpyNewbie.Common.ObjectPool
 {
-    [UdonBehaviourSyncMode(BehaviourSyncMode.NoVariableSync)] [RequireComponent(typeof(VRCObjectPool))]
+    [AddComponentMenu("Newbie Commons/Object Pool/Proxy")]
+    [UdonBehaviourSyncMode(BehaviourSyncMode.NoVariableSync)]
+    [RequireComponent(typeof(VRCObjectPool))]
     public class ObjectPoolProxy : UdonSharpBehaviour
     {
         private VRCObjectPool _pool;

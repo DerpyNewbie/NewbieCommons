@@ -7,6 +7,7 @@ namespace DerpyNewbie.Common
     /// <summary>
     /// Useful line drawing manager for debug visualization purposes.
     /// </summary>
+    [AddComponentMenu("Newbie Commons/Utils/Line Manager")]
     [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
     public class LineManager : UdonSharpBehaviour
     {

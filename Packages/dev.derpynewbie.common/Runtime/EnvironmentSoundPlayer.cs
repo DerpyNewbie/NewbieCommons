@@ -3,6 +3,7 @@ using UnityEngine;
 
 namespace DerpyNewbie.Common
 {
+    [AddComponentMenu("Newbie Commons/Utils/Environment Sound Player")]
     [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
     public class EnvironmentSoundPlayer : UdonSharpBehaviour
     {
