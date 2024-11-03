@@ -7,33 +7,41 @@ namespace DerpyNewbie.Common.Invoker
 {
     public class PickupEventInvoker : CommonInvokerBase
     {
-        [SerializeField]
-        private PickupEventType eventType;
-        [SerializeField]
-        private bool overrideEventAsActualPickupEvent = true;
+        [SerializeField] private PickupEventType eventType = PickupEventType.All;
+        [SerializeField] private bool overrideEventAsActualPickupEvent = true;
+
+        private PickupEventType _lastEventType;
 
         public override void OnPickup()
         {
-            if (eventType == PickupEventType.OnPickup)
-                Invoke();
+            if (eventType != PickupEventType.OnPickup && eventType != PickupEventType.All) return;
+            
+            _lastEventType = PickupEventType.OnPickup;
+            Invoke();
         }
 
         public override void OnPickupUseDown()
         {
-            if (eventType == PickupEventType.OnPickupUseDown)
-                Invoke();
+            if (eventType != PickupEventType.OnPickupUseDown && eventType != PickupEventType.All) return;
+            
+            _lastEventType = PickupEventType.OnPickupUseDown;
+            Invoke();
         }
 
         public override void OnPickupUseUp()
         {
-            if (eventType == PickupEventType.OnPickupUseUp)
-                Invoke();
+            if (eventType != PickupEventType.OnPickupUseUp && eventType != PickupEventType.All) return;
+            
+            _lastEventType = PickupEventType.OnPickupUseUp;
+            Invoke();
         }
 
         public override void OnDrop()
         {
-            if (eventType == PickupEventType.OnDrop)
-                Invoke();
+            if (eventType != PickupEventType.OnDrop && eventType != PickupEventType.All) return;
+            
+            _lastEventType = PickupEventType.OnDrop;
+            Invoke();
         }
 
         protected override void InternalInvoke()
@@ -41,7 +49,7 @@ namespace DerpyNewbie.Common.Invoker
             if (overrideEventAsActualPickupEvent)
             {
                 foreach (var listener in listeners)
-                    _SendCallbackEvent(listener, eventType);
+                    _SendCallbackEvent(listener, _lastEventType);
             }
             else
             {
@@ -132,6 +140,7 @@ namespace DerpyNewbie.Common.Invoker
         OnPickup,
         OnPickupUseDown,
         OnPickupUseUp,
-        OnDrop
+        OnDrop,
+        All,
     }
 }
