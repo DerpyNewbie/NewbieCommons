@@ -11,6 +11,7 @@ namespace DerpyNewbie.Common.Editor
         public const string DoInject = MenuNamespace + "Inject NewbieInject fields";
         public const string DoInjectOnBuild = MenuNamespace + "Inject On Build";
         public const string DoInjectOnPlay = MenuNamespace + "Inject On Play";
+        public const string DoClear = MenuNamespace + "Clear NewbieInject fields";
 
         static NewbieInjectMenuItem()
         {
@@ -45,7 +46,7 @@ namespace DerpyNewbie.Common.Editor
 
             EditorUtility.DisplayDialog(
                 "Inject",
-                $"Injected reference to {NewbieInjectProcessor.UpdatedComponentCount} objects ({NewbieInjectProcessor.UpdatedFieldCount} fields).",
+                $"Injected reference to {NewbieInjectProcessor.ComponentUpdateCount} objects ({NewbieInjectProcessor.ProcessedFieldCount} fields).",
                 "OK!"
             );
         }
@@ -62,6 +63,21 @@ namespace DerpyNewbie.Common.Editor
         {
             NewbieInjectConfig.InjectOnPlay = !NewbieInjectConfig.InjectOnPlay;
             UpdateMenuCheck();
+        }
+
+        [MenuItem(DoClear, priority = 3)]
+        private static void ClearMenu()
+        {
+            try
+            {
+                NewbieInjectProcessor.Clear(SceneManager.GetActiveScene());
+            }
+            catch (InvalidOperationException ex)
+            {
+                UnityEngine.Debug.LogException(ex);
+                EditorUtility.DisplayDialog("Clear", "Clearing aborted", "OK!");
+                return;
+            }
         }
     }
 }
