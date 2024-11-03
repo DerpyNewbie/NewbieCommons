@@ -1,4 +1,5 @@
-﻿using UdonSharp;
+﻿using JetBrains.Annotations;
+using UdonSharp;
 using UnityEngine;
 using VRC.SDKBase;
 using VRC.Udon.Common.Enums;
@@ -22,7 +23,8 @@ namespace DerpyNewbie.Common.Invoker
         [SerializeField]
         protected bool isMasterOnly;
 
-        protected virtual void Invoke()
+        [PublicAPI]
+        public void Invoke()
         {
             if ((!Utilities.IsValid(Networking.LocalPlayer)) || (isMasterOnly && !Networking.LocalPlayer.isMaster))
                 return;
