@@ -11,5 +11,36 @@ namespace DerpyNewbie.Common
     /// </remarks>
     public sealed class NewbieInject : Attribute
     {
+        public readonly SearchScope Scope;
+
+        public NewbieInject()
+        {
+            Scope = SearchScope.Scene;
+        }
+
+        public NewbieInject(SearchScope scope)
+        {
+            Scope = scope;
+        }
+    }
+
+    public enum SearchScope
+    {
+        /// <summary>
+        /// Searches from whole Scene
+        /// </summary>
+        Scene,
+        /// <summary>
+        /// Searches from attached GameObject
+        /// </summary>
+        Self,
+        /// <summary>
+        /// Searches from children of attached GameObject
+        /// </summary>
+        Children,
+        /// <summary>
+        /// Searches from parents of attached GameObject
+        /// </summary>
+        Parents,
     }
 }

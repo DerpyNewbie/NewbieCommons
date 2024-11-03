@@ -4,58 +4,147 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using HarmonyLib;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using VRC.SDKBase.Editor.BuildPipeline;
 using static DerpyNewbie.Common.Editor.NewbieCommonsEditorUtil;
+using Debug = UnityEngine.Debug;
 
 namespace DerpyNewbie.Common.Editor
 {
     public static class NewbieInjectProcessor
     {
-        public static int UpdatedFieldCount { get; private set; } = 0;
-        public static int UpdatedComponentCount { get; private set; } = 0;
+        public static int ProcessedFieldCount { get; private set; } = 0;
+        public static int ComponentUpdateCount { get; private set; } = 0;
 
         public static void Inject(Scene scene, bool showProgress = true, bool printResult = true)
         {
             var stopwatch = Stopwatch.StartNew();
 
-            UpdatedFieldCount = 0;
-            UpdatedComponentCount = 0;
+            ProcessedFieldCount = 0;
+            ComponentUpdateCount = 0;
 
             var injectFields = GetInjectFields();
-            var foundComponentsDict = new Dictionary<Type, Component>();
+            var foundComponentsDict = new Dictionary<FieldInfo, List<Component>>();
+            var perObjectComponentsDict = new Dictionary<FieldInfo, Dictionary<GameObject, List<Component>>>();
 
             foreach (var field in injectFields)
             {
-                if (!foundComponentsDict.ContainsKey(field.FieldType))
-                {
-                    var foundComponent = GetComponentsInScene(scene, field.FieldType).FirstOrDefault();
-                    foundComponentsDict.Add(field.FieldType, foundComponent);
-                    Log(
-                        $"Found requested component `{field.FieldType.FullName}` at `{GetHierarchyName(foundComponent)}`");
-                }
-
                 foreach (var component in GetComponentsInScene(scene, field.DeclaringType))
                 {
+                    var injectOption = field.GetCustomAttribute<NewbieInject>();
+
                     if (showProgress && EditorUtility.DisplayCancelableProgressBar(
                             "Injecting Reference",
-                            $"{injectFields.Count}/{UpdatedFieldCount} Injecting field `{field.Module.Name}:{field.Name}:{field.FieldType.Name}` for `{GetHierarchyName(component)}`",
-                            injectFields.Count / (float)UpdatedFieldCount))
+                            $"{injectFields.Count}/{ProcessedFieldCount} Injecting field `{field.Module.Name}:{field.Name}:{field.FieldType.Name}({injectOption.Scope.ToString()})` for `{GetHierarchyName(component)}`",
+                            injectFields.Count / (float)ProcessedFieldCount))
                     {
                         EditorUtility.ClearProgressBar();
                         throw new InvalidOperationException("Operation cancelled by user interruption");
                     }
 
+                    var go = component.gameObject;
+                    List<Component> injectingComponents;
+                    switch (injectOption.Scope)
+                    {
+                        default:
+                        {
+                            injectingComponents = new List<Component>();
+                            break;
+                        }
+                        case SearchScope.Scene:
+                        {
+                            if (!foundComponentsDict.TryGetValue(field, out injectingComponents))
+                            {
+                                injectingComponents = GetComponentsInScene(scene, field.FieldType);
+                                foundComponentsDict.Add(field, injectingComponents);
+
+                                Log(
+                                    $"Found Scene scoped component `{field.FieldType.FullName}` at `{injectingComponents.Select(GetHierarchyName).Join()}`");
+                            }
+
+                            break;
+                        }
+                        case SearchScope.Self:
+                        {
+                            if (!perObjectComponentsDict.TryGetValue(field, out var goSearchCache))
+                            {
+                                goSearchCache = new Dictionary<GameObject, List<Component>>();
+                                perObjectComponentsDict.Add(field, goSearchCache);
+                            }
+
+                            if (!goSearchCache.TryGetValue(go, out injectingComponents))
+                            {
+                                injectingComponents = go.GetComponents(GetComponentType(field.FieldType)).ToList();
+                                goSearchCache.Add(go, injectingComponents);
+                                Log(
+                                    $"Found Self scoped component `{GetHierarchyName(go)}:{field.FieldType.FullName}` at `{injectingComponents.Select(GetHierarchyName).Join()}`");
+                            }
+
+                            break;
+                        }
+                        case SearchScope.Children:
+                        {
+                            if (!perObjectComponentsDict.TryGetValue(field, out var goSearchCache))
+                            {
+                                goSearchCache = new Dictionary<GameObject, List<Component>>();
+                                perObjectComponentsDict.Add(field, goSearchCache);
+                            }
+
+                            if (!goSearchCache.TryGetValue(go, out injectingComponents))
+                            {
+                                injectingComponents = component
+                                    .GetComponentsInChildren(GetComponentType(field.FieldType)).ToList();
+                                goSearchCache.Add(go, injectingComponents);
+
+                                Log(
+                                    $"Found Children scoped component `{GetHierarchyName(go)}:{field.FieldType.FullName}` at `{injectingComponents.Select(GetHierarchyName).Join()}`");
+                            }
+
+                            break;
+                        }
+                        case SearchScope.Parents:
+                        {
+                            if (!perObjectComponentsDict.TryGetValue(field, out var goSearchCache))
+                            {
+                                goSearchCache = new Dictionary<GameObject, List<Component>>();
+                                perObjectComponentsDict.Add(field, goSearchCache);
+                            }
+
+                            if (!goSearchCache.TryGetValue(go, out injectingComponents))
+                            {
+                                injectingComponents = component
+                                    .GetComponentsInParent(GetComponentType(field.FieldType)).ToList();
+                                goSearchCache.Add(go, injectingComponents);
+                                Log(
+                                    $"Found Parents scoped component `{GetHierarchyName(go)}:{field.FieldType.FullName}` at `{injectingComponents.Select(GetHierarchyName).Join()}`");
+                            }
+
+                            break;
+                        }
+                    }
+
                     var serializedObject = new SerializedObject(component);
                     var serializedProperty = serializedObject.FindProperty(field.Name);
-                    serializedProperty.objectReferenceValue = foundComponentsDict[field.FieldType];
+                    if (field.FieldType.IsArray)
+                    {
+                        serializedProperty.ClearArray();
+                        serializedProperty.arraySize = injectingComponents.Count;
+                        for (var i = 0; i < injectingComponents.Count; i++)
+                            serializedProperty.GetArrayElementAtIndex(i).objectReferenceValue = injectingComponents[i];
+                    }
+                    else
+                    {
+                        serializedProperty.objectReferenceValue = injectingComponents.FirstOrDefault();
+                    }
+
                     serializedObject.ApplyModifiedProperties();
-                    ++UpdatedComponentCount;
+                    ++ComponentUpdateCount;
                 }
 
-                ++UpdatedFieldCount;
+                ++ProcessedFieldCount;
             }
 
             stopwatch.Stop();
@@ -65,16 +154,70 @@ namespace DerpyNewbie.Common.Editor
 
             if (printResult)
             {
-                var sb = new StringBuilder("Injection Result:");
+                var sb = new StringBuilder("Scene Injection Result:" +
+                                           "\n====== Scene Search ======");
 
                 foreach (var pair in foundComponentsDict)
-                    sb.Append("\n").Append(pair.Key.FullName).Append(", ").Append(GetHierarchyName(pair.Value));
+                    sb.Append("\n")
+                        .Append(pair.Key.FieldType.FullName).Append(", ")
+                        .Append(pair.Value.Select(GetHierarchyName).Join());
+
+                sb.Append("\n\n====== GameObject Search ======");
+
+                foreach (var pair in perObjectComponentsDict)
+                {
+                    foreach (var goSearch in pair.Value)
+                    {
+                        sb.Append("\n")
+                            .Append(pair.Key.FieldType.FullName)
+                            .Append(":")
+                            .Append(pair.Key.GetCustomAttribute<NewbieInject>().Scope.ToString())
+                            .Append(", ")
+                            .Append("(").Append(GetHierarchyName(goSearch.Key)).Append("), ")
+                            .Append(goSearch.Value.Select(GetHierarchyName).Join());
+                    }
+                }
 
                 sb.Append(
-                    $"\n\n{UpdatedFieldCount} fields affected, {UpdatedComponentCount} components updated in {stopwatch.ElapsedMilliseconds} ms.");
+                    $"\n\n{ProcessedFieldCount} fields affected, {ComponentUpdateCount} component updates in {stopwatch.ElapsedMilliseconds} ms.");
 
                 Log(sb.ToString());
             }
+        }
+
+        public static void Clear(Scene scene)
+        {
+            var stopwatch = Stopwatch.StartNew();
+
+            ProcessedFieldCount = 0;
+            ComponentUpdateCount = 0;
+
+            var injectFields = GetInjectFields();
+            foreach (var field in injectFields)
+            {
+                foreach (var component in GetComponentsInScene(scene, field.DeclaringType))
+                {
+                    var serializedObject = new SerializedObject(component);
+                    var serializedProperty = serializedObject.FindProperty(field.Name);
+                    if (field.FieldType.IsArray)
+                    {
+                        serializedProperty.ClearArray();
+                        serializedProperty.arraySize = 0;
+                    }
+                    else
+                    {
+                        serializedProperty.objectReferenceValue = null;
+                    }
+
+                    serializedObject.ApplyModifiedProperties();
+                    ++ComponentUpdateCount;
+                }
+
+                ++ProcessedFieldCount;
+            }
+
+            Debug.Log(
+                $"{ProcessedFieldCount} fields affected, {ComponentUpdateCount} component updates in {stopwatch.ElapsedMilliseconds} ms.");
         }
 
         public static List<FieldInfo> GetInjectFields()
@@ -93,16 +236,28 @@ namespace DerpyNewbie.Common.Editor
         {
             var components = new List<Component>();
             foreach (var o in scene.GetRootGameObjects())
-                components.AddRange(o.GetComponentsInChildren(type));
+                components.AddRange(o.GetComponentsInChildren(GetComponentType(type)));
             return components;
+        }
+
+        public static Type GetComponentType(Type type)
+        {
+            if (type.IsArray || type.IsPointer || type.IsByRef || type.IsMarshalByRef) return type.GetElementType();
+            return type;
         }
 
         public static string GetHierarchyName(Component component)
         {
-            if (component == null)
-                return "null";
+            return component == null ? "null" : GetHierarchyName(component.transform);
+        }
 
-            var t = component.transform;
+        public static string GetHierarchyName(GameObject go)
+        {
+            return go == null ? "null" : GetHierarchyName(go.transform);
+        }
+
+        public static string GetHierarchyName(Transform t)
+        {
             StringBuilder sb = new StringBuilder(t.name);
             while (t.parent != null)
             {
