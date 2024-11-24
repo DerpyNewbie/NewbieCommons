@@ -1,12 +1,12 @@
 {
   "name": "dev.derpynewbie.common",
-  "version": "0.4.0-beta.1",
+  "version": "0.4.0-beta.2",
   "displayName": "Newbie Commons",
   "description": "Useful utilities for UdonSharp",
   "unity": "2019.4",
   "author": {
     "name": "DerpyNewbie",
-    "email": "derpynewbie@gmail.com",
+    "email": "contact@derpynewbie.dev",
     "url": "https://github.com/derpynewbie"
   },
   "samples": [
