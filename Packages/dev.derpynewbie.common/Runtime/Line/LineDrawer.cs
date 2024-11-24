@@ -2,7 +2,7 @@
 using UdonSharp;
 using UnityEngine;
 
-namespace DerpyNewbie.Common
+namespace DerpyNewbie.Common.Line
 {
     /// <summary>
     /// Draws a line with provided values.
