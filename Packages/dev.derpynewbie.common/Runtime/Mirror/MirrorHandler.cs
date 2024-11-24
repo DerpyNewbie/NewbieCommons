@@ -1,7 +1,7 @@
 ﻿using UdonSharp;
 using UnityEngine;
 
-namespace DerpyNewbie.Common
+namespace DerpyNewbie.Common.Mirror
 {
     [AddComponentMenu("Newbie Commons/Utils/Mirror Handler")]
     [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
