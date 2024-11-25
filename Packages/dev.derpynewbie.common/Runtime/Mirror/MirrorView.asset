@@ -21,7 +21,7 @@ MonoBehaviour:
   compiledVersion: 2
   behaviourSyncMode: 1
   hasInteractEvent: 0
-  scriptID: -3046695921911116002
+  scriptID: 8584452886529785660
   serializationData:
     SerializedFormat: 2
     SerializedBytes: 
@@ -62,7 +62,7 @@ MonoBehaviour:
       Data: 3|System.RuntimeType, mscorlib
     - Name: 
       Entry: 1
-      Data: DerpyNewbie.Common.Mirror.MirrorHandler, DerpyNewbie.Common
+      Data: DerpyNewbie.Common.MirrorHandler, DerpyNewbie.Common
     - Name: 
       Entry: 8
       Data: 

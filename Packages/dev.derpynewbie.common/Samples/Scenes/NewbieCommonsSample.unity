@@ -829,7 +829,7 @@ MonoBehaviour:
   SynchronizePosition: 0
   AllowCollisionOwnershipTransfer: 0
   Reliable: 0
-  _syncMethod: 0
+  _syncMethod: 1
   serializedProgramAsset: {fileID: 11400000, guid: 0c48745eca46aff41bd36805fc8f956c,
     type: 2}
   programSource: {fileID: 11400000, guid: 3ff259a302ce43648a2ecdf049ebc905, type: 2}
@@ -1626,7 +1626,7 @@ MonoBehaviour:
   SynchronizePosition: 0
   AllowCollisionOwnershipTransfer: 0
   Reliable: 0
-  _syncMethod: 0
+  _syncMethod: 1
   serializedProgramAsset: {fileID: 11400000, guid: be5ca84ef694dc440bb53c88061df21b,
     type: 2}
   programSource: {fileID: 11400000, guid: 9c8f93bfabc65dd4d94db1952a1e9523, type: 2}
@@ -2475,6 +2475,7 @@ MonoBehaviour:
     SerializationNodes: []
   _udonSharpBackingUdonBehaviour: {fileID: 1026992944}
   targetProxy: {fileID: 1063894484}
+  spawnOverride: {fileID: 0}
 --- !u!65 &1026992946
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -3577,6 +3578,7 @@ MonoBehaviour:
     SerializationNodes: []
   _udonSharpBackingUdonBehaviour: {fileID: 1451897810}
   targetProxy: {fileID: 1863923291}
+  spawnOverride: {fileID: 0}
 --- !u!135 &1451897812
 SphereCollider:
   m_ObjectHideFlags: 0
