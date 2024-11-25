@@ -2,7 +2,7 @@
 using UdonSharp;
 using UnityEngine;
 
-namespace DerpyNewbie.Common.Line
+namespace DerpyNewbie.Common
 {
     /// <summary>
     /// Useful line drawing manager for debug visualization purposes.
