@@ -1,4 +1,4 @@
-﻿using System;
+﻿using UnityEngine;
 
 namespace DerpyNewbie.Common
 {
@@ -9,7 +9,7 @@ namespace DerpyNewbie.Common
     /// Field attributed with this class will be searched at VRCSDK BuildRequestedCallback time,
     /// then injected with first-found component of field type.
     /// </remarks>
-    public sealed class NewbieInject : Attribute
+    public sealed class NewbieInject : PropertyAttribute
     {
         public readonly SearchScope Scope;
 
@@ -30,14 +30,17 @@ namespace DerpyNewbie.Common
         /// Searches from whole Scene
         /// </summary>
         Scene,
+
         /// <summary>
         /// Searches from attached GameObject
         /// </summary>
         Self,
+
         /// <summary>
         /// Searches from children of attached GameObject
         /// </summary>
         Children,
+
         /// <summary>
         /// Searches from parents of attached GameObject
         /// </summary>
