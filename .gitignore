@@ -5,6 +5,7 @@
 [Bb]uilds/
 [Ll]ogs/
 [Aa]ssets/
+[Uu]serSettings/
 
 # Visual Studio cache directory
 .vs/
@@ -49,3 +50,5 @@ crashlytics-build.properties
 com.vrchat.*/
 !Packages/dev.derpynewbie.common/*
 !com.vrchat.core.*/
+
+[Cc]lientSimStorage/
