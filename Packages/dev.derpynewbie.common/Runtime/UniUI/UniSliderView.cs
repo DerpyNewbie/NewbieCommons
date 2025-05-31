@@ -1,12 +1,11 @@
-﻿using System;
-using JetBrains.Annotations;
-using TMPro;
+﻿using TMPro;
 using UdonSharp;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace DerpyNewbie.Common.UniUI
 {
+    [AddComponentMenu("Newbie Commons/UniUI/UniSliderView")]
     [RequireComponent(typeof(TMP_Text))]
     [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
     public class UniSliderView : UniUI

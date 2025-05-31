@@ -1,11 +1,11 @@
-﻿using System;
-using UdonSharp;
+﻿using UdonSharp;
 using UnityEngine;
 using UnityEngine.UI;
 using VRC.SDKBase;
 
 namespace DerpyNewbie.Common.UniUI
 {
+    [AddComponentMenu("Newbie Commons/UniUI/UniToggleSync")]
     [UdonBehaviourSyncMode(BehaviourSyncMode.Manual)]
     public class UniToggleSync : UniUI
     {

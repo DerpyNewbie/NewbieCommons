@@ -1,11 +1,11 @@
-﻿using System;
-using UdonSharp;
+﻿using UdonSharp;
 using UnityEngine;
 using UnityEngine.UI;
 using VRC.SDKBase;
 
 namespace DerpyNewbie.Common.UniUI
 {
+    [AddComponentMenu("Newbie Commons/UniUI/UniSliderSync")]
     [UdonBehaviourSyncMode(BehaviourSyncMode.Manual)]
     public class UniSliderSync : UniUI
     {
