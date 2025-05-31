@@ -1,11 +1,10 @@
-﻿using System;
-using JetBrains.Annotations;
-using UdonSharp;
+﻿using UdonSharp;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace DerpyNewbie.Common.UniUI
 {
+    [AddComponentMenu("Newbie Commons/UniUI/UniToggleView")]
     [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
     public class UniToggleView : UniUI
     {

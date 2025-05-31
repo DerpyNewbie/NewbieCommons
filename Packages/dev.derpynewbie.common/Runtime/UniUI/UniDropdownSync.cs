@@ -5,6 +5,7 @@ using VRC.SDKBase;
 
 namespace DerpyNewbie.Common.UniUI
 {
+    [AddComponentMenu("Newbie Commons/UniUI/UniDropdownSync")]
     [UdonBehaviourSyncMode(BehaviourSyncMode.Manual)]
     public class UniDropdownSync : UniUI
     {
