@@ -11,7 +11,22 @@ PrefabInstance:
     - target: {fileID: 1646272138524675224, guid: faa19d59765b28840806d50ae7199bb1,
         type: 3}
       propertyPath: m_text
-      value: Primary Button
+      value: Secondary Button
+      objectReference: {fileID: 0}
+    - target: {fileID: 1646272138524675224, guid: faa19d59765b28840806d50ae7199bb1,
+        type: 3}
+      propertyPath: m_fontColor.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1646272138524675224, guid: faa19d59765b28840806d50ae7199bb1,
+        type: 3}
+      propertyPath: m_fontColor.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1646272138524675224, guid: faa19d59765b28840806d50ae7199bb1,
+        type: 3}
+      propertyPath: m_fontColor.r
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1725163323536173354, guid: faa19d59765b28840806d50ae7199bb1,
         type: 3}
@@ -116,22 +131,22 @@ PrefabInstance:
     - target: {fileID: 4946946243967333021, guid: faa19d59765b28840806d50ae7199bb1,
         type: 3}
       propertyPath: m_Name
-      value: UniButtonSecondary Variant
+      value: UniButtonSecondary
       objectReference: {fileID: 0}
     - target: {fileID: 9133846822758316289, guid: faa19d59765b28840806d50ae7199bb1,
         type: 3}
       propertyPath: m_Color.b
-      value: 0.4470588
+      value: 0.6320754
       objectReference: {fileID: 0}
     - target: {fileID: 9133846822758316289, guid: faa19d59765b28840806d50ae7199bb1,
         type: 3}
       propertyPath: m_Color.g
-      value: 0.48702163
+      value: 0.6320754
       objectReference: {fileID: 0}
     - target: {fileID: 9133846822758316289, guid: faa19d59765b28840806d50ae7199bb1,
         type: 3}
       propertyPath: m_Color.r
-      value: 1
+      value: 0.6320754
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
