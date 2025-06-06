@@ -1,4 +1,5 @@
 ﻿using System;
+using TMPro;
 using UdonSharp;
 using UnityEngine;
 using UnityEngine.UI;
@@ -11,23 +12,32 @@ namespace DerpyNewbie.Common.UI
     {
         [SerializeField]
         private UdonSharpBehaviour callback;
+
         [SerializeField]
         private string callbackMethod;
+
         [SerializeField]
         private Text text;
+
+        [SerializeField]
+        private TMP_Text tmpText;
+
         [SerializeField]
         private float confirmDuration = 5F;
+
         [SerializeField]
         private string confirmTextMessage = "Are you sure?";
 
         private string _defaultTextMessage;
+        private string _defaultTmpTextMessage;
 
         private bool _isInConfirmState;
         private DateTime _lastClickedTime;
 
         private void Start()
         {
-            _defaultTextMessage = text.text;
+            if (text) _defaultTextMessage = text.text;
+            if (tmpText) _defaultTmpTextMessage = tmpText.text;
         }
 
         public void OnClick()
@@ -71,13 +81,15 @@ namespace DerpyNewbie.Common.UI
 
         private void ToDefaultState()
         {
-            text.text = _defaultTextMessage;
+            if (text) text.text = _defaultTextMessage;
+            if (tmpText) tmpText.text = _defaultTmpTextMessage;
             _isInConfirmState = false;
         }
 
         private void ToConfirmState()
         {
-            text.text = confirmTextMessage;
+            if (text) text.text = confirmTextMessage;
+            if (tmpText) tmpText.text = confirmTextMessage;
             _isInConfirmState = true;
         }
     }
