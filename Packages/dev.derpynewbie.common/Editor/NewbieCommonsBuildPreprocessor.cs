@@ -16,7 +16,6 @@ namespace DerpyNewbie.Common.Editor
         private static void PlayModeStateChanged(PlayModeStateChange change)
         {
             var isBuilding = BuildPipeline.isBuildingPlayer ||
-                             Object.FindObjectOfType<PipelineSaver>() != null ||
                              change != PlayModeStateChange.ExitingEditMode;
             if (isBuilding)
                 return;
