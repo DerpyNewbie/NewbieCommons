@@ -38,7 +38,7 @@ namespace DerpyNewbie.Common.Editor
 
                     if (showProgress && EditorUtility.DisplayCancelableProgressBar(
                             "Injecting Reference",
-                            $"{injectFields.Count}/{ProcessedFieldCount} Injecting field `{field.Module.Name}:{field.Name}:{field.FieldType.Name}({injectOption.Scope.ToString()})` for `{GetHierarchyName(component)}`",
+                            $"{injectFields.Count}/{ProcessedFieldCount} Injecting field `{GetFieldName(field)}({injectOption.Scope.ToString()})` for `{GetHierarchyName(component)}`",
                             injectFields.Count / (float)ProcessedFieldCount))
                     {
                         EditorUtility.ClearProgressBar();
@@ -62,7 +62,7 @@ namespace DerpyNewbie.Common.Editor
                                 foundComponentsDict.Add(field, injectingComponents);
 
                                 Log(
-                                    $"Found Scene scoped component `{field.FieldType.FullName}` at `{injectingComponents.Select(GetHierarchyName).Join()}`");
+                                    $"Found Scene scoped component `{GetFieldName(field)}` at `{injectingComponents.Select(GetHierarchyName).Join()}`");
                             }
 
                             break;
@@ -80,7 +80,7 @@ namespace DerpyNewbie.Common.Editor
                                 injectingComponents = go.GetComponents(GetComponentType(field.FieldType)).ToList();
                                 goSearchCache.Add(go, injectingComponents);
                                 Log(
-                                    $"Found Self scoped component `{GetHierarchyName(go)}:{field.FieldType.FullName}` at `{injectingComponents.Select(GetHierarchyName).Join()}`");
+                                    $"Found Self scoped component `{GetHierarchyName(go)}:{GetFieldName(field)}` at `{injectingComponents.Select(GetHierarchyName).Join()}`");
                             }
 
                             break;
@@ -100,7 +100,7 @@ namespace DerpyNewbie.Common.Editor
                                 goSearchCache.Add(go, injectingComponents);
 
                                 Log(
-                                    $"Found Children scoped component `{GetHierarchyName(go)}:{field.FieldType.FullName}` at `{injectingComponents.Select(GetHierarchyName).Join()}`");
+                                    $"Found Children scoped component `{GetHierarchyName(go)}:{GetFieldName(field)}` at `{injectingComponents.Select(GetHierarchyName).Join()}`");
                             }
 
                             break;
@@ -119,7 +119,7 @@ namespace DerpyNewbie.Common.Editor
                                     .GetComponentsInParent(GetComponentType(field.FieldType)).ToList();
                                 goSearchCache.Add(go, injectingComponents);
                                 Log(
-                                    $"Found Parents scoped component `{GetHierarchyName(go)}:{field.FieldType.FullName}` at `{injectingComponents.Select(GetHierarchyName).Join()}`");
+                                    $"Found Parents scoped component `{GetHierarchyName(go)}:{GetFieldName(field)}` at `{injectingComponents.Select(GetHierarchyName).Join()}`");
                             }
 
                             break;
@@ -128,6 +128,13 @@ namespace DerpyNewbie.Common.Editor
 
                     var serializedObject = new SerializedObject(component);
                     var serializedProperty = serializedObject.FindProperty(field.Name);
+                    if (serializedProperty == null)
+                    {
+                        Debug.LogWarning(
+                            $"Field `{GetFieldName(field)}` is marked with NewbieInject attribute, but is not found in component `{GetHierarchyName(component)}`.");
+                        continue;
+                    }
+
                     if (field.FieldType.IsArray)
                     {
                         serializedProperty.ClearArray();
@@ -154,13 +161,17 @@ namespace DerpyNewbie.Common.Editor
 
             if (printResult)
             {
-                var sb = new StringBuilder("Scene Injection Result:" +
-                                           "\n====== Scene Search ======");
+                var sb = new StringBuilder("Scene Injection Result:");
+
+                sb.Append(
+                    $"\n{ProcessedFieldCount} fields affected, {ComponentUpdateCount} component updates in {stopwatch.ElapsedMilliseconds} ms.");
+
+                sb.Append("\n\n====== Scene Search ======");
 
                 foreach (var pair in foundComponentsDict)
                     sb.Append("\n")
-                        .Append(pair.Key.FieldType.FullName).Append(", ")
-                        .Append(pair.Value.Select(GetHierarchyName).Join());
+                        .Append(GetFieldName(pair.Key)).Append(", ")
+                        .Append('{').Append(pair.Value.Select(GetHierarchyName).Join()).Append('}');
 
                 sb.Append("\n\n====== GameObject Search ======");
 
@@ -169,17 +180,14 @@ namespace DerpyNewbie.Common.Editor
                     foreach (var goSearch in pair.Value)
                     {
                         sb.Append("\n")
-                            .Append(pair.Key.FieldType.FullName)
-                            .Append(":")
+                            .Append(GetFieldName(pair.Key))
+                            .Append(':')
                             .Append(pair.Key.GetCustomAttribute<NewbieInject>().Scope.ToString())
                             .Append(", ")
-                            .Append("(").Append(GetHierarchyName(goSearch.Key)).Append("), ")
-                            .Append(goSearch.Value.Select(GetHierarchyName).Join());
+                            .Append('{').Append(GetHierarchyName(goSearch.Key)).Append("}, ")
+                            .Append('{').Append(goSearch.Value.Select(GetHierarchyName).Join()).Append('}');
                     }
                 }
-
-                sb.Append(
-                    $"\n\n{ProcessedFieldCount} fields affected, {ComponentUpdateCount} component updates in {stopwatch.ElapsedMilliseconds} ms.");
 
                 Log(sb.ToString());
             }
@@ -199,6 +207,13 @@ namespace DerpyNewbie.Common.Editor
                 {
                     var serializedObject = new SerializedObject(component);
                     var serializedProperty = serializedObject.FindProperty(field.Name);
+                    if (serializedProperty == null)
+                    {
+                        Debug.LogWarning(
+                            $"Field `{field.Module.Name}:{field.Name}:{field.FieldType.Name}` is marked with NewbieInject attribute, but is not found in component `{GetHierarchyName(component)}`.");
+                        continue;
+                    }
+
                     if (field.FieldType.IsArray)
                     {
                         serializedProperty.ClearArray();
@@ -227,7 +242,21 @@ namespace DerpyNewbie.Common.Editor
             foreach (var type in asm.GetTypes())
             foreach (var field in type.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
                 if (field.IsDefined(typeof(NewbieInject), true))
+                {
+                    if (!field.IsDefined(typeof(SerializeField), true) && field.IsPrivate)
+                    {
+                        Debug.LogWarning(
+                            $"Field `{GetFieldName(field)}` is marked with NewbieInject attribute, but is not marked with SerializeField attribute. This may cause unexpected behaviour.");
+                    }
+
+                    if (field.IsDefined(typeof(NonSerializedAttribute), true))
+                    {
+                        Debug.LogWarning(
+                            $"Field `{GetFieldName(field)}` is marked with NewbieInject attribute, but is marked with NonSerialized attribute. This may cause unexpected behaviour.");
+                    }
+
                     result.Add(field);
+                }
 
             return result;
         }
@@ -267,6 +296,13 @@ namespace DerpyNewbie.Common.Editor
             }
 
             return sb.ToString();
+        }
+
+        public static string GetFieldName(FieldInfo field)
+        {
+            return field.DeclaringType != null
+                ? $"{field.FieldType.Name} {field.DeclaringType.FullName}#{field.Name}"
+                : $"{field.FieldType.Name} {field.Name}";
         }
 
         public static void DoPrePlayInject(PlayModeStateChange change)
