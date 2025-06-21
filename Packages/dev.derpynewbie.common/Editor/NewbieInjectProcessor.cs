@@ -58,7 +58,9 @@ namespace DerpyNewbie.Common.Editor
                         {
                             if (!foundComponentsDict.TryGetValue(field, out injectingComponents))
                             {
-                                injectingComponents = GetComponentsInScene(scene, field.FieldType);
+                                injectingComponents = GetComponentsInScene(scene, field.FieldType)
+                                    .Where(c => !IsEditorOnly(c)).ToList();
+
                                 foundComponentsDict.Add(field, injectingComponents);
 
                                 Log(
@@ -77,7 +79,10 @@ namespace DerpyNewbie.Common.Editor
 
                             if (!goSearchCache.TryGetValue(go, out injectingComponents))
                             {
-                                injectingComponents = go.GetComponents(GetComponentType(field.FieldType)).ToList();
+                                injectingComponents = go
+                                    .GetComponents(GetComponentType(field.FieldType))
+                                    .Where(c => !IsEditorOnly(c)).ToList();
+
                                 goSearchCache.Add(go, injectingComponents);
                                 Log(
                                     $"Found Self scoped component `{GetHierarchyName(go)}:{GetFieldName(field)}` at `{injectingComponents.Select(GetHierarchyName).Join()}`");
@@ -96,7 +101,9 @@ namespace DerpyNewbie.Common.Editor
                             if (!goSearchCache.TryGetValue(go, out injectingComponents))
                             {
                                 injectingComponents = component
-                                    .GetComponentsInChildren(GetComponentType(field.FieldType)).ToList();
+                                    .GetComponentsInChildren(GetComponentType(field.FieldType), true)
+                                    .Where(c => !IsEditorOnly(c)).ToList();
+
                                 goSearchCache.Add(go, injectingComponents);
 
                                 Log(
@@ -116,7 +123,9 @@ namespace DerpyNewbie.Common.Editor
                             if (!goSearchCache.TryGetValue(go, out injectingComponents))
                             {
                                 injectingComponents = component
-                                    .GetComponentsInParent(GetComponentType(field.FieldType)).ToList();
+                                    .GetComponentsInParent(GetComponentType(field.FieldType), true)
+                                    .Where(c => !IsEditorOnly(c)).ToList();
+
                                 goSearchCache.Add(go, injectingComponents);
                                 Log(
                                     $"Found Parents scoped component `{GetHierarchyName(go)}:{GetFieldName(field)}` at `{injectingComponents.Select(GetHierarchyName).Join()}`");
@@ -265,7 +274,7 @@ namespace DerpyNewbie.Common.Editor
         {
             var components = new List<Component>();
             foreach (var o in scene.GetRootGameObjects())
-                components.AddRange(o.GetComponentsInChildren(GetComponentType(type)));
+                components.AddRange(o.GetComponentsInChildren(GetComponentType(type), true));
             return components;
         }
 
@@ -303,6 +312,21 @@ namespace DerpyNewbie.Common.Editor
             return field.DeclaringType != null
                 ? $"{field.FieldType.Name} {field.DeclaringType.FullName}#{field.Name}"
                 : $"{field.FieldType.Name} {field.Name}";
+        }
+
+        public static bool IsEditorOnly(Component component)
+        {
+            return IsEditorOnly(component.gameObject);
+        }
+
+        public static bool IsEditorOnly(GameObject go)
+        {
+            if (go.transform.parent != null)
+            {
+                return go.CompareTag("EditorOnly") || IsEditorOnly(go.transform.parent.gameObject);
+            }
+
+            return go.CompareTag("EditorOnly");
         }
 
         public static void DoPrePlayInject(PlayModeStateChange change)
