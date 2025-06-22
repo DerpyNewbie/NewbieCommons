@@ -12,38 +12,34 @@ namespace DerpyNewbie.Common.UniUI
         [SerializeField] [NewbieInject(SearchScope.Parents)]
         private Slider slider;
 
-        [UdonSynced] [FieldChangeCallback(nameof(SyncedValue))]
+        [UdonSynced]
         private float _syncedValue;
 
         private bool _inSyncedChangeContext;
 
-        public float SyncedValue
-        {
-            get => _syncedValue;
-            set
-            {
-                _syncedValue = value;
-                if (_inSyncedChangeContext) return;
-
-                _inSyncedChangeContext = true;
-                slider.value = value;
-                _inSyncedChangeContext = false;
-            }
-        }
-
         private void Start()
         {
+            // serialize the initial value when instance master has first joined
             if (!Networking.IsMaster) return;
             _syncedValue = slider.value;
             RequestSerialization();
         }
 
+        public override void OnDeserialization()
+        {
+            // apply deserialized values to UI
+            _inSyncedChangeContext = true;
+            slider.value = _syncedValue;
+            _inSyncedChangeContext = false;
+        }
+
         public override void OnUniUIUpdate()
         {
-            if (_inSyncedChangeContext || Mathf.Approximately(slider.value, SyncedValue)) return;
+            // don't resync if the event was called by OnDeserialization change
+            if (_inSyncedChangeContext) return;
 
-            SyncedValue = slider.value;
-            Networking.SetOwner(Networking.LocalPlayer, gameObject);
+            _syncedValue = slider.value;
+            if (!Networking.IsOwner(gameObject)) Networking.SetOwner(Networking.LocalPlayer, gameObject);
             RequestSerialization();
         }
     }

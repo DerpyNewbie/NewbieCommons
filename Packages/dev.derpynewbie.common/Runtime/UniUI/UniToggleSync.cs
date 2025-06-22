@@ -12,38 +12,34 @@ namespace DerpyNewbie.Common.UniUI
         [SerializeField] [NewbieInject(SearchScope.Parents)]
         private Toggle toggle;
 
-        [UdonSynced] [FieldChangeCallback(nameof(SyncedIsOn))]
+        [UdonSynced]
         private bool _syncedIsOn;
 
         private bool _inSyncedChangeContext;
 
-        public bool SyncedIsOn
-        {
-            get => _syncedIsOn;
-            set
-            {
-                _syncedIsOn = value;
-                if (_inSyncedChangeContext) return;
-
-                _inSyncedChangeContext = true;
-                toggle.isOn = value;
-                _inSyncedChangeContext = false;
-            }
-        }
-
         private void Start()
         {
+            // serialize the initial value when instance master has first joined
             if (!Networking.IsMaster) return;
             _syncedIsOn = toggle.isOn;
             RequestSerialization();
         }
 
+        public override void OnDeserialization()
+        {
+            // apply deserialized values to UI
+            _inSyncedChangeContext = true;
+            toggle.isOn = _syncedIsOn;
+            _inSyncedChangeContext = false;
+        }
+
         public override void OnUniUIUpdate()
         {
-            if (_inSyncedChangeContext || toggle.isOn == SyncedIsOn) return;
+            // don't resync if the event was called by OnDeserialization change
+            if (_inSyncedChangeContext) return;
 
-            SyncedIsOn = toggle.isOn;
-            Networking.SetOwner(Networking.LocalPlayer, gameObject);
+            _syncedIsOn = toggle.isOn;
+            if (!Networking.IsOwner(gameObject)) Networking.SetOwner(Networking.LocalPlayer, gameObject);
             RequestSerialization();
         }
     }
