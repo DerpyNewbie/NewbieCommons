@@ -7,10 +7,10 @@ namespace DerpyNewbie.Common.Editor
     [InitializeOnLoad]
     public static class NewbieInjectMenuItem
     {
-        public const string MenuNamespace = "DerpyNewbie/DI/";
+        public const string MenuNamespace = "Tools/DerpyNewbie/NewbieInject/";
         public const string DoInject = MenuNamespace + "Inject NewbieInject fields";
-        public const string DoInjectOnBuild = MenuNamespace + "Inject On Build";
-        public const string DoInjectOnPlay = MenuNamespace + "Inject On Play";
+        public const string DoInjectOnBuild = MenuNamespace + "Options/Inject On Build";
+        public const string DoInjectOnPlay = MenuNamespace + "Options/Inject On Play";
         public const string DoClear = MenuNamespace + "Clear NewbieInject fields";
 
         static NewbieInjectMenuItem()
@@ -51,21 +51,21 @@ namespace DerpyNewbie.Common.Editor
             );
         }
 
-        [MenuItem(DoInjectOnBuild, priority = 1)]
+        [MenuItem(DoInjectOnBuild, priority = 3)]
         private static void DoInjectOnBuildMenu()
         {
             NewbieInjectConfig.InjectOnBuild = !NewbieInjectConfig.InjectOnBuild;
             UpdateMenuCheck();
         }
 
-        [MenuItem(DoInjectOnPlay, priority = 2)]
+        [MenuItem(DoInjectOnPlay, priority = 4)]
         private static void DoInjectOnPlayMenu()
         {
             NewbieInjectConfig.InjectOnPlay = !NewbieInjectConfig.InjectOnPlay;
             UpdateMenuCheck();
         }
 
-        [MenuItem(DoClear, priority = 3)]
+        [MenuItem(DoClear, priority = 2)]
         private static void ClearMenu()
         {
             try
