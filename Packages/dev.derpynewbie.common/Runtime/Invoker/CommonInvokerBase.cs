@@ -43,7 +43,7 @@ namespace DerpyNewbie.Common.Invoker
                 InternalInvoke();
         }
 
-        protected virtual void InternalInvoke()
+        public virtual void InternalInvoke()
         {
             foreach (var listener in listeners)
             {
