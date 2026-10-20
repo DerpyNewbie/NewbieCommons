@@ -45,7 +45,7 @@ namespace DerpyNewbie.Common.Invoker
             Invoke();
         }
 
-        protected override void InternalInvoke()
+        public override void InternalInvoke()
         {
             if (overrideEventAsActualPickupEvent)
             {
