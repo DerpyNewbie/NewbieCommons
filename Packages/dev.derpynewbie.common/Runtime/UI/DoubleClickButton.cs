@@ -88,8 +88,18 @@ namespace DerpyNewbie.Common.UI
 
         private void ToConfirmState()
         {
-            if (text) text.text = confirmTextMessage;
-            if (tmpText) tmpText.text = confirmTextMessage;
+            if (text)
+            {
+                if (text.text != confirmTextMessage) _defaultTextMessage = text.text;
+                text.text = confirmTextMessage;
+            }
+
+            if (tmpText)
+            {
+                if (tmpText.text != confirmTextMessage) _defaultTmpTextMessage = tmpText.text;
+                tmpText.text = confirmTextMessage;
+            }
+
             _isInConfirmState = true;
         }
     }
